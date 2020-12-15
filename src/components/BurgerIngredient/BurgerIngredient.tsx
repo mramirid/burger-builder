@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import classes from "./BurgerIngredient.module.css";
 
-export enum Ingredient {
+export enum IngredientType {
   BreadBottom,
   BreadTop,
   Meat,
@@ -12,27 +12,27 @@ export enum Ingredient {
 }
 
 interface BurgerIngredientProps {
-  type: Ingredient;
+  type: IngredientType;
 }
 
 const BurgerIngredient: FC<BurgerIngredientProps> = (props) => {
   switch (props.type) {
-    case Ingredient.BreadTop:
+    case IngredientType.BreadTop:
       return (
         <div className={classes.BreadTop}>
           <div className={classes.Seeds1}></div>
           <div className={classes.Seeds2}></div>
         </div>
       );
-    case Ingredient.BreadBottom:
+    case IngredientType.BreadBottom:
       return <div className={classes.BreadBottom}></div>;
-    case Ingredient.Meat:
+    case IngredientType.Meat:
       return <div className={classes.Meat}></div>;
-    case Ingredient.Cheese:
+    case IngredientType.Cheese:
       return <div className={classes.Cheese}></div>;
-    case Ingredient.Salad:
+    case IngredientType.Salad:
       return <div className={classes.Salad}></div>;
-    case Ingredient.Bacon:
+    case IngredientType.Bacon:
       return <div className={classes.Bacon}></div>;
     default:
       return null;

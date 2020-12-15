@@ -2,15 +2,15 @@ import { FC } from "react";
 
 import classes from "./Burger.module.css";
 import BurgerIngredient, {
-  Ingredient,
+  IngredientType,
 } from "../BurgerIngredient/BurgerIngredient";
 
 const Burger: FC = () => (
   <div className={classes.Burger}>
-    <BurgerIngredient type={Ingredient.BreadTop} />
-    <BurgerIngredient type={Ingredient.Cheese} />
-    <BurgerIngredient type={Ingredient.Meat} />
-    <BurgerIngredient type={Ingredient.BreadBottom} />
+    <BurgerIngredient type={IngredientType.BreadTop} />
+    <BurgerIngredient type={IngredientType.Cheese} />
+    <BurgerIngredient type={IngredientType.Meat} />
+    <BurgerIngredient type={IngredientType.BreadBottom} />
   </div>
 );
 

@@ -1,8 +1,10 @@
 import { FC } from "react";
 
+import Burger from "../../components/Burger/Burger";
+
 const BurgerBuilder: FC = () => (
   <>
-    <div>Burger</div>
+    <Burger />
     <div>Build Controls</div>
   </>
 );

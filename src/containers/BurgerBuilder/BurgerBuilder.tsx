@@ -1,12 +1,23 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 
-import Burger from "../../components/Burger/Burger";
+import Burger, { Ingredients } from "../../components/Burger/Burger";
 
-const BurgerBuilder: FC = () => (
-  <>
-    <Burger />
-    <div>Build Controls</div>
-  </>
-);
+const BurgerBuilder: FC = () => {
+  const [ingredients] = useState<Ingredients>({
+    breadTop: 1,
+    salad: 0,
+    bacon: 0,
+    cheese: 0,
+    meat: 0,
+    breadBottom: 1,
+  });
+
+  return (
+    <>
+      <Burger ingredients={ingredients} />
+      <div>Build Controls</div>
+    </>
+  );
+};
 
 export default BurgerBuilder;

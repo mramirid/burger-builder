@@ -3,12 +3,12 @@ import { FC } from "react";
 import classes from "./BurgerIngredient.module.css";
 
 export enum IngredientType {
-  BreadBottom,
-  BreadTop,
-  Meat,
-  Cheese,
-  Salad,
-  Bacon,
+  BreadTop = 'breadTop',
+  Meat = 'meat',
+  Cheese = 'cheese',
+  Salad = 'salad',
+  Bacon = 'bacon',
+  BreadBottom = 'breadBottom',
 }
 
 interface BurgerIngredientProps {
@@ -35,6 +35,7 @@ const BurgerIngredient: FC<BurgerIngredientProps> = (props) => {
     case IngredientType.Bacon:
       return <div className={classes.Bacon}></div>;
     default:
+      console.error('Unknown IngredientType!')
       return null;
   }
 };

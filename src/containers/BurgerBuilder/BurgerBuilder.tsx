@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 
 import Burger, { Ingredients } from "../../components/Burger/Burger";
+import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 
 const BurgerBuilder: FC = () => {
   const [ingredients] = useState<Ingredients>({
@@ -15,7 +16,7 @@ const BurgerBuilder: FC = () => {
   return (
     <>
       <Burger ingredients={ingredients} />
-      <div>Build Controls</div>
+      <BuildControls />
     </>
   );
 };

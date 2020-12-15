@@ -3,7 +3,7 @@ import { FC } from "react";
 import classes from "./Burger.module.css";
 import BurgerIngredient, {
   IngredientType,
-} from "../BurgerIngredient/BurgerIngredient";
+} from "./BurgerIngredient/BurgerIngredient";
 
 export interface Ingredients {
   [IngredientType.BreadTop]: 1;

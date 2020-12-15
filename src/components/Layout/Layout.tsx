@@ -1,11 +1,11 @@
 import { FC } from "react";
 
-import styles from "./Layout.module.css";
+import classes from "./Layout.module.css";
 
 const Layout: FC = (props) => (
   <>
     <div>Toolbar, SideDrawer, Backdrop</div>
-    <main className={styles.Content}>{props.children}</main>
+    <main className={classes.Content}>{props.children}</main>
   </>
 );
 

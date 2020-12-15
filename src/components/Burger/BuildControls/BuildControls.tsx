@@ -28,10 +28,18 @@ const controls: Control[] = [
   },
 ];
 
-const BuildControls: FC = (props) => (
+interface BuildControlsProps {
+  onIngredientAdded: (type: IngredientType) => void;
+}
+
+const BuildControls: FC<BuildControlsProps> = (props) => (
   <div className={classes.BuildControls}>
     {controls.map((control) => (
-      <BuildControl key={control.label} label={control.label} />
+      <BuildControl
+        key={control.label}
+        label={control.label}
+        onIngredientAdded={() => props.onIngredientAdded(control.type)}
+      />
     ))}
   </div>
 );

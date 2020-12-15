@@ -21,12 +21,10 @@ interface BurgerPropsType {
 const Burger: FC<BurgerPropsType> = (props) => {
   const burgerStack = Object.keys(props.ingredients)
     .map((key) => {
-      const ingredient = key as IngredientType;
+      const type = key as IngredientType;
       const curIngredientStack: JSX.Element[] = [];
-      for (let i = 0; i < props.ingredients[ingredient]; i++) {
-        curIngredientStack.push(
-          <BurgerIngredient key={key + i} type={ingredient} />
-        );
+      for (let i = 0; i < props.ingredients[type]; i++) {
+        curIngredientStack.push(<BurgerIngredient key={key + i} type={type} />);
       }
       return curIngredientStack;
     })

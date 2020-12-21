@@ -4,41 +4,27 @@ import classes from "./BuildControls.module.css";
 import { IngredientType } from "../BurgerIngredient/BurgerIngredient";
 import BuildControl from "./BuildControl/BuildControl";
 
-interface Control {
+export type Controls = {
   label: string;
   type: IngredientType;
-}
-
-const controls: Control[] = [
-  {
-    label: "Salad",
-    type: IngredientType.Salad,
-  },
-  {
-    label: "Bacon",
-    type: IngredientType.Bacon,
-  },
-  {
-    label: "Cheese",
-    type: IngredientType.Cheese,
-  },
-  {
-    label: "Meat",
-    type: IngredientType.Meat,
-  },
-];
+  isLessBtnDisabled: boolean;
+}[]
 
 interface BuildControlsProps {
-  onIngredientAdded: (type: IngredientType) => void;
+  addIngredient: (type: IngredientType) => void;
+  removeIngredient: (type: IngredientType) => void;
+  controls: Controls;
 }
 
 const BuildControls: FC<BuildControlsProps> = (props) => (
   <div className={classes.BuildControls}>
-    {controls.map((control) => (
+    {props.controls.map((control) => (
       <BuildControl
         key={control.label}
         label={control.label}
-        onIngredientAdded={() => props.onIngredientAdded(control.type)}
+        isLessBtnDisabled={control.isLessBtnDisabled}
+        onIngredientAdded={() => props.addIngredient(control.type)}
+        onIngredientRemoved={() => props.removeIngredient(control.type)}
       />
     ))}
   </div>

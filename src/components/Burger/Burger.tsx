@@ -5,25 +5,25 @@ import BurgerIngredient, {
   IngredientType,
 } from "./BurgerIngredient/BurgerIngredient";
 
-export interface Ingredients {
-  [IngredientType.BreadTop]: 1;
+export interface IngredientCounts {
+  [IngredientType.BreadTop]: number;
   [IngredientType.Salad]: number;
   [IngredientType.Bacon]: number;
   [IngredientType.Cheese]: number;
   [IngredientType.Meat]: number;
-  [IngredientType.BreadBottom]: 1;
+  [IngredientType.BreadBottom]: number;
 }
 
 interface BurgerPropsType {
-  ingredients: Ingredients;
+  ingredientCounts: IngredientCounts;
 }
 
 const Burger: FC<BurgerPropsType> = (props) => {
-  const burgerStack = Object.keys(props.ingredients)
+  const burgerStack = Object.keys(props.ingredientCounts)
     .map((key) => {
       const type = key as IngredientType;
       const curIngredientStack: JSX.Element[] = [];
-      for (let i = 0; i < props.ingredients[type]; i++) {
+      for (let i = 0; i < props.ingredientCounts[type]; i++) {
         curIngredientStack.push(<BurgerIngredient key={key + i} type={type} />);
       }
       return curIngredientStack;

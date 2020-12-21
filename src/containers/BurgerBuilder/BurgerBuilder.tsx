@@ -1,14 +1,17 @@
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 
-import Burger, { Ingredients } from "../../components/Burger/Burger";
-import BuildControls from "../../components/Burger/BuildControls/BuildControls";
+import Burger, { IngredientCounts } from "../../components/Burger/Burger";
+import BuildControls, {
+  Controls,
+} from "../../components/Burger/BuildControls/BuildControls";
 import {
   IngredientType,
   INGREDIENT_PRICES,
 } from "../../components/Burger/BurgerIngredient/BurgerIngredient";
 
 const BurgerBuilder: FC = () => {
-  const [ingredients, setIngredients] = useState<Ingredients>({
+  const [totalPrice, setTotalPrice] = useState(4.0);
+  const [ingredientCounts, setIngredientCounts] = useState<IngredientCounts>({
     breadTop: 1,
     salad: 0,
     bacon: 0,
@@ -16,22 +19,69 @@ const BurgerBuilder: FC = () => {
     meat: 0,
     breadBottom: 1,
   });
-  const [totalPrice, setTotalPrice] = useState(4.0);
 
   const addIngredient = useCallback((type: IngredientType) => {
-    setIngredients((ingredients) => {
+    setIngredientCounts((ingredientCounts) => {
       setTotalPrice((totalPrice) => totalPrice + INGREDIENT_PRICES[type]);
-      ingredients[type]++;
-      return ingredients;
+      const updatedCounts = { ...ingredientCounts };
+      updatedCounts[type] = ingredientCounts[type] + 1;
+      return updatedCounts;
     });
   }, []);
 
-  const removeIngredient = useCallback((type: IngredientType) => {}, []);
+  const removeIngredient = useCallback((type: IngredientType) => {
+    setIngredientCounts((ingredientCounts) => {
+      if (ingredientCounts[type] === 0) {
+        return ingredientCounts;
+      }
+      setTotalPrice((totalPrice) => totalPrice - INGREDIENT_PRICES[type]);
+      const updatedCounts = { ...ingredientCounts };
+      updatedCounts[type] = ingredientCounts[type] - 1;
+      return updatedCounts;
+    });
+  }, []);
+
+  const [controls, setControls] = useState<Controls>([
+    {
+      label: "Salad",
+      type: IngredientType.Salad,
+      isLessBtnDisabled: false,
+    },
+    {
+      label: "Bacon",
+      type: IngredientType.Bacon,
+      isLessBtnDisabled: false,
+    },
+    {
+      label: "Cheese",
+      type: IngredientType.Cheese,
+      isLessBtnDisabled: false,
+    },
+    {
+      label: "Meat",
+      type: IngredientType.Meat,
+      isLessBtnDisabled: false,
+    },
+  ]);
+
+  useEffect(() => {
+    setControls((controls) => {
+      const updatedControls = controls.map((control) => ({
+        ...control,
+        isLessBtnDisabled: ingredientCounts[control.type] === 0,
+      }));
+      return updatedControls;
+    });
+  }, [ingredientCounts]);
 
   return (
     <>
-      <Burger ingredients={ingredients} />
-      <BuildControls onIngredientAdded={addIngredient} />
+      <Burger ingredientCounts={ingredientCounts} />
+      <BuildControls
+        addIngredient={addIngredient}
+        removeIngredient={removeIngredient}
+        controls={controls}
+      />
     </>
   );
 };

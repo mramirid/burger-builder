@@ -1,18 +1,8 @@
 import { FC } from "react";
 
 import classes from "./Burger.module.css";
-import BurgerIngredient, {
-  IngredientType,
-} from "./BurgerIngredient/BurgerIngredient";
-
-export interface IngredientCounts {
-  [IngredientType.BreadTop]: number;
-  [IngredientType.Salad]: number;
-  [IngredientType.Bacon]: number;
-  [IngredientType.Cheese]: number;
-  [IngredientType.Meat]: number;
-  [IngredientType.BreadBottom]: number;
-}
+import BurgerIngredient from "./BurgerIngredient/BurgerIngredient";
+import { IngredientType, IngredientCounts } from "./types";
 
 interface BurgerPropsType {
   ingredientCounts: IngredientCounts;

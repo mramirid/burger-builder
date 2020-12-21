@@ -1,15 +1,15 @@
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useState } from "react";
 
-import Burger, { IngredientCounts } from "../../components/Burger/Burger";
-import BuildControls, {
-  Controls,
-} from "../../components/Burger/BuildControls/BuildControls";
+import Burger from "../../components/Burger/Burger";
 import {
+  IngredientCounts,
   IngredientType,
-  INGREDIENT_PRICES,
-} from "../../components/Burger/BurgerIngredient/BurgerIngredient";
+} from "../../components/Burger/types";
+import { INGREDIENT_PRICES } from "../../components/Burger/constants";
+import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 
 const BurgerBuilder: FC = () => {
+  const [canOrder, setCanOrder] = useState(false);
   const [totalPrice, setTotalPrice] = useState(4.0);
   const [ingredientCounts, setIngredientCounts] = useState<IngredientCounts>({
     breadTop: 1,
@@ -20,59 +20,41 @@ const BurgerBuilder: FC = () => {
     breadBottom: 1,
   });
 
-  const addIngredient = useCallback((type: IngredientType) => {
-    setIngredientCounts((ingredientCounts) => {
-      setTotalPrice((totalPrice) => totalPrice + INGREDIENT_PRICES[type]);
-      const updatedCounts = { ...ingredientCounts };
-      updatedCounts[type] = ingredientCounts[type] + 1;
-      return updatedCounts;
-    });
+  const toggleCanOrder = useCallback((ingredientCounts: IngredientCounts) => {
+    const sum = Object.keys(ingredientCounts)
+      .map((key) => ingredientCounts[key as IngredientType])
+      .reduce((sum, curCount) => sum + curCount, 0);
+    setCanOrder(sum > 2);
   }, []);
 
-  const removeIngredient = useCallback((type: IngredientType) => {
-    setIngredientCounts((ingredientCounts) => {
-      if (ingredientCounts[type] === 0) {
-        return ingredientCounts;
-      }
-      setTotalPrice((totalPrice) => totalPrice - INGREDIENT_PRICES[type]);
-      const updatedCounts = { ...ingredientCounts };
-      updatedCounts[type] = ingredientCounts[type] - 1;
-      return updatedCounts;
-    });
-  }, []);
+  const addIngredient = useCallback(
+    (type: IngredientType) => {
+      setIngredientCounts((ingredientCounts) => {
+        const updatedIngreCounts = { ...ingredientCounts };
+        updatedIngreCounts[type] = ingredientCounts[type] + 1;
+        toggleCanOrder(updatedIngreCounts);
+        setTotalPrice((totalPrice) => totalPrice + INGREDIENT_PRICES[type]);
+        return updatedIngreCounts;
+      });
+    },
+    [toggleCanOrder]
+  );
 
-  const [controls, setControls] = useState<Controls>([
-    {
-      label: "Salad",
-      type: IngredientType.Salad,
-      isLessBtnDisabled: false,
+  const removeIngredient = useCallback(
+    (type: IngredientType) => {
+      setIngredientCounts((ingredientCounts) => {
+        if (ingredientCounts[type] === 0) {
+          return ingredientCounts;
+        }
+        const updatedIngreCounts = { ...ingredientCounts };
+        updatedIngreCounts[type] = ingredientCounts[type] - 1;
+        toggleCanOrder(updatedIngreCounts);
+        setTotalPrice((totalPrice) => totalPrice - INGREDIENT_PRICES[type]);
+        return updatedIngreCounts;
+      });
     },
-    {
-      label: "Bacon",
-      type: IngredientType.Bacon,
-      isLessBtnDisabled: false,
-    },
-    {
-      label: "Cheese",
-      type: IngredientType.Cheese,
-      isLessBtnDisabled: false,
-    },
-    {
-      label: "Meat",
-      type: IngredientType.Meat,
-      isLessBtnDisabled: false,
-    },
-  ]);
-
-  useEffect(() => {
-    setControls((controls) => {
-      const updatedControls = controls.map((control) => ({
-        ...control,
-        isLessBtnDisabled: ingredientCounts[control.type] === 0,
-      }));
-      return updatedControls;
-    });
-  }, [ingredientCounts]);
+    [toggleCanOrder]
+  );
 
   return (
     <>
@@ -80,8 +62,9 @@ const BurgerBuilder: FC = () => {
       <BuildControls
         addIngredient={addIngredient}
         removeIngredient={removeIngredient}
-        controls={controls}
+        ingredientCounts={ingredientCounts}
         totalPrice={totalPrice}
+        canOrder={canOrder}
       />
     </>
   );

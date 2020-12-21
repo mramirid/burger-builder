@@ -1,24 +1,7 @@
 import { FC } from "react";
 
 import classes from "./BurgerIngredient.module.css";
-
-export enum IngredientType {
-  BreadTop = "breadTop",
-  Meat = "meat",
-  Cheese = "cheese",
-  Salad = "salad",
-  Bacon = "bacon",
-  BreadBottom = "breadBottom",
-}
-
-export const INGREDIENT_PRICES = {
-  [IngredientType.BreadTop]: 0,
-  [IngredientType.Meat]: 0.5,
-  [IngredientType.Cheese]: 0.4,
-  [IngredientType.Salad]: 1.3,
-  [IngredientType.Bacon]: 0.7,
-  [IngredientType.BreadBottom]: 0,
-};
+import { IngredientType } from "../types";
 
 interface BurgerIngredientProps {
   type: IngredientType;

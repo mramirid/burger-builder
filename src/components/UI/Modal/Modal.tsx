@@ -1,0 +1,27 @@
+import { CSSProperties, FC } from "react";
+
+import classes from "./Modal.module.css";
+import Backdrop from "../Backdrop/Backdrop";
+
+interface ModalProps {
+  isDisplayed: boolean;
+  onClosed: () => void;
+}
+
+const Modal: FC<ModalProps> = (props) => {
+  const styles: CSSProperties = {
+    transform: props.isDisplayed ? "translateY(0)" : "translateY(-100vh)",
+    opacity: props.isDisplayed ? "1" : "0",
+  };
+
+  return (
+    <>
+      <div className={classes.Modal} style={styles}>
+        {props.children}
+      </div>
+      <Backdrop isDisplayed={props.isDisplayed} onClicked={props.onClosed} />
+    </>
+  );
+};
+
+export default Modal;

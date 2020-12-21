@@ -1,0 +1,21 @@
+import { FC, MouseEvent } from "react";
+
+import classes from "./Button.module.css";
+
+type BtnClickEvent = MouseEvent<HTMLButtonElement, globalThis.MouseEvent>;
+
+interface ButtonProps {
+  btnType: "Danger" | "Success";
+  onClicked: (event: BtnClickEvent) => void;
+}
+
+const Button: FC<ButtonProps> = (props) => (
+  <button
+    className={[classes.Button, classes[props.btnType]].join(" ")}
+    onClick={props.onClicked}
+  >
+    {props.children}
+  </button>
+);
+
+export default Button;

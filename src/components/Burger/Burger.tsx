@@ -4,11 +4,11 @@ import classes from "./Burger.module.css";
 import BurgerIngredient from "./BurgerIngredient/BurgerIngredient";
 import { IngredientType, IngredientCounts } from "./types";
 
-interface BurgerPropsType {
+interface BurgerProps {
   ingredientCounts: IngredientCounts;
 }
 
-const Burger: FC<BurgerPropsType> = (props) => {
+const Burger: FC<BurgerProps> = (props) => {
   const burgerStack = Object.keys(props.ingredientCounts)
     .map((key) => {
       const type = key as IngredientType;

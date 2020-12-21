@@ -1,8 +1,10 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, MouseEvent } from "react";
 
 import classes from "./BuildControls.module.css";
 import BuildControl from "./BuildControl/BuildControl";
 import { IngredientCounts, IngredientType } from "../types";
+
+type BtnClickEvent = MouseEvent<HTMLButtonElement, globalThis.MouseEvent>;
 
 type Controls = {
   label: string;
@@ -11,11 +13,12 @@ type Controls = {
 }[];
 
 interface BuildControlsProps {
-  addIngredient: (type: IngredientType) => void;
-  removeIngredient: (type: IngredientType) => void;
   ingredientCounts: IngredientCounts;
   totalPrice: number;
-  canOrder: boolean;
+  purchasable: boolean;
+  addIngredient: (type: IngredientType) => void;
+  removeIngredient: (type: IngredientType) => void;
+  onOrder: (event: BtnClickEvent) => void;
 }
 
 const BuildControls: FC<BuildControlsProps> = (props) => {
@@ -65,7 +68,11 @@ const BuildControls: FC<BuildControlsProps> = (props) => {
           onIngredientRemoved={() => props.removeIngredient(control.type)}
         />
       ))}
-      <button disabled={!props.canOrder} className={classes.OrderButton}>
+      <button
+        className={classes.OrderButton}
+        disabled={!props.purchasable}
+        onClick={props.onOrder}
+      >
         ORDER NOW
       </button>
     </div>

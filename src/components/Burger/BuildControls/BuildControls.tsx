@@ -8,16 +8,20 @@ export type Controls = {
   label: string;
   type: IngredientType;
   isLessBtnDisabled: boolean;
-}[]
+}[];
 
 interface BuildControlsProps {
   addIngredient: (type: IngredientType) => void;
   removeIngredient: (type: IngredientType) => void;
   controls: Controls;
+  totalPrice: number;
 }
 
 const BuildControls: FC<BuildControlsProps> = (props) => (
   <div className={classes.BuildControls}>
+    <p>
+      Current Price: <strong>{props.totalPrice.toFixed(2)}</strong>
+    </p>
     {props.controls.map((control) => (
       <BuildControl
         key={control.label}

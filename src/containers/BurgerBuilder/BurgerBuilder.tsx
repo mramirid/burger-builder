@@ -81,6 +81,7 @@ const BurgerBuilder: FC = () => {
         addIngredient={addIngredient}
         removeIngredient={removeIngredient}
         controls={controls}
+        totalPrice={totalPrice}
       />
     </>
   );

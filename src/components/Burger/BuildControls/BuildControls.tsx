@@ -1,10 +1,9 @@
-import { FC, useEffect, useState, MouseEvent } from "react";
+import { FC, useEffect, useState } from "react";
 
 import classes from "./BuildControls.module.css";
 import BuildControl from "./BuildControl/BuildControl";
 import { IngredientCounts, IngredientType } from "../types";
-
-type BtnClickEvent = MouseEvent<HTMLButtonElement, globalThis.MouseEvent>;
+import { BtnClickEvent } from "../../types";
 
 type Controls = {
   label: string;

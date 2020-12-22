@@ -1,9 +1,8 @@
-import { FC, MouseEvent } from "react";
+import { FC } from "react";
 
 import { IngredientCounts, IngredientType } from "../types";
 import Button from "../../UI/Button/Button";
-
-type BtnClickEvent = MouseEvent<HTMLButtonElement, globalThis.MouseEvent>;
+import { BtnClickEvent } from "../../types";
 
 interface OrderSummaryProps {
   ingredientCounts: IngredientCounts;

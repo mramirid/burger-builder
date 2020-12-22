@@ -3,14 +3,22 @@ import { FC } from "react";
 import classes from "./Toolbar.module.css";
 import Logo from "../../Logo/Logo";
 import NavigationItems from "../NavigationItems/NavigationItems";
+import DrawerToggle from "../SideDrawer/DrawerToggle/DrawerToggle";
+import { DivClickEvent } from "../../types";
 
-const Toolbar: FC = () => (
+interface ToolbarProps {
+  onDrawerToggleClicked: (event: DivClickEvent) => void;
+}
+
+const Toolbar: FC<ToolbarProps> = (props) => (
   <header className={classes.Toolbar}>
-    <div>MENU</div>
-    <Logo />
-    <nav>
+    <DrawerToggle onClicked={props.onDrawerToggleClicked} />
+    <div className={classes.Logo}>
+      <Logo />
+    </div>
+    <div className={classes.DesktopOnly}>
       <NavigationItems />
-    </nav>
+    </div>
   </header>
 );
 

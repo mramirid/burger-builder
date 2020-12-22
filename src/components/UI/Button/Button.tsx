@@ -1,8 +1,7 @@
 import { FC, MouseEvent } from "react";
 
 import classes from "./Button.module.css";
-
-type BtnClickEvent = MouseEvent<HTMLButtonElement, globalThis.MouseEvent>;
+import { BtnClickEvent } from "../../types";
 
 interface ButtonProps {
   btnType: "Danger" | "Success";

@@ -18,9 +18,7 @@ const Burger: FC<BurgerProps> = (props) => {
       }
       return curIngredientStack;
     })
-    .reduce((burgerStack, curIngredientStack) => {
-      return burgerStack.concat(curIngredientStack);
-    }, []);
+    .flat();
 
   if (burgerStack.length <= 2) {
     const warnElement = <h1 key={"warn"}>Please start adding ingredients!</h1>;

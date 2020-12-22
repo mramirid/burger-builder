@@ -1,8 +1,7 @@
 import { FC, MouseEvent } from "react";
 
 import classes from "./Backdrop.module.css";
-
-type DivClickEvent = MouseEvent<HTMLDivElement, globalThis.MouseEvent>;
+import { DivClickEvent } from "../../types";
 
 interface BackdropProps {
   isDisplayed: boolean;

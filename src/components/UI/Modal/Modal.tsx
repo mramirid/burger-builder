@@ -1,4 +1,4 @@
-import { CSSProperties, FC } from "react";
+import { ReactNode, CSSProperties, FC, memo, useEffect } from "react";
 
 import classes from "./Modal.module.css";
 import Backdrop from "../Backdrop/Backdrop";
@@ -6,6 +6,7 @@ import Backdrop from "../Backdrop/Backdrop";
 interface ModalProps {
   isDisplayed: boolean;
   onClosed: () => void;
+  children: ReactNode;
 }
 
 const Modal: FC<ModalProps> = (props) => {
@@ -13,6 +14,10 @@ const Modal: FC<ModalProps> = (props) => {
     transform: props.isDisplayed ? "translateY(0)" : "translateY(-100vh)",
     opacity: props.isDisplayed ? "1" : "0",
   };
+
+  useEffect(() => {
+    console.log("Modal re-rendered");
+  });
 
   return (
     <>
@@ -24,4 +29,6 @@ const Modal: FC<ModalProps> = (props) => {
   );
 };
 
-export default Modal;
+export default memo(Modal, (prevProps, nextProps) => {
+  return prevProps.isDisplayed === nextProps.isDisplayed;
+});

@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 
 import { IngredientCounts, IngredientType } from "../types";
 import Button from "../../UI/Button/Button";
@@ -27,10 +27,6 @@ const OrderSummary: FC<OrderSummaryProps> = (props) => {
         {": " + props.ingredientCounts[type]}
       </li>
     );
-  });
-
-  useEffect(() => {
-    console.log("OrderSummary re-rendered");
   });
 
   return (

@@ -1,11 +1,11 @@
 import { FC, useCallback, useState } from "react";
 
 import classes from "./Layout.module.css";
-import Toolbar from "../Navigation/Toolbar/Toolbar";
-import SideDrawer from "../Navigation/SideDrawer/SideDrawer";
+import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
+import SideDrawer from "../../components/Navigation/SideDrawer/SideDrawer";
 
 const Layout: FC = (props) => {
-  const [isSideDrawerDisplayed, setIsSideDrawerDisplayed] = useState(true);
+  const [isSideDrawerDisplayed, setIsSideDrawerDisplayed] = useState(false);
 
   const closeSideDrawer = useCallback(() => {
     setIsSideDrawerDisplayed(false);

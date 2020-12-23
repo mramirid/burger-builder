@@ -39,11 +39,11 @@ const BurgerBuilder: FC = () => {
         const updatedIngreCounts = { ...ingredientCounts };
         updatedIngreCounts[type] = ingredientCounts[type] + 1;
         togglePurchasable(updatedIngreCounts);
-        setTotalPrice((totalPrice) => totalPrice + INGREDIENT_PRICES[type]);
+        setTotalPrice(totalPrice + INGREDIENT_PRICES[type]);
         return updatedIngreCounts;
       });
     },
-    [togglePurchasable]
+    [totalPrice, togglePurchasable]
   );
 
   const removeIngredient = useCallback(
@@ -55,11 +55,11 @@ const BurgerBuilder: FC = () => {
         const updatedIngreCounts = { ...ingredientCounts };
         updatedIngreCounts[type] = ingredientCounts[type] - 1;
         togglePurchasable(updatedIngreCounts);
-        setTotalPrice((totalPrice) => totalPrice - INGREDIENT_PRICES[type]);
+        setTotalPrice(totalPrice - INGREDIENT_PRICES[type]);
         return updatedIngreCounts;
       });
     },
-    [togglePurchasable]
+    [totalPrice, togglePurchasable]
   );
 
   const startPurchase = useCallback(() => setIsPurchasing(true), []);
@@ -67,6 +67,10 @@ const BurgerBuilder: FC = () => {
   const continuePurchase = useCallback(() => alert("You continue!"), []);
 
   const cancelPurchase = useCallback(() => setIsPurchasing(false), []);
+
+  useState(() => {
+    console.log(totalPrice);
+  });
 
   return (
     <>

@@ -9,6 +9,8 @@ import { INGREDIENT_PRICES } from "../../components/Burger/constants";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
+import axiosOrders from "../../axios/orders";
+import { PostResponse } from "../../axios/firebase-types";
 
 const BurgerBuilder: FC = () => {
   const [ingredientCounts, setIngredientCounts] = useState<IngredientCounts>({
@@ -64,13 +66,29 @@ const BurgerBuilder: FC = () => {
 
   const startPurchase = useCallback(() => setIsPurchasing(true), []);
 
-  const continuePurchase = useCallback(() => alert("You continue!"), []);
+  const continuePurchase = useCallback(async () => {
+    try {
+      const response = await axiosOrders.post<PostResponse>("/orders.json", {
+        ingredientCounts,
+        totalPrice,
+        deliveryMethod: "fastest",
+        customer: {
+          name: "Amir Muhammad Hakim",
+          email: "amir.muh.hakim@gmail.com",
+          address: {
+            street: "Unknown",
+            zipCode: "123456",
+            country: "Indonesia",
+          },
+        },
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [ingredientCounts, totalPrice]);
 
   const cancelPurchase = useCallback(() => setIsPurchasing(false), []);
-
-  useState(() => {
-    console.log(totalPrice);
-  });
 
   return (
     <>

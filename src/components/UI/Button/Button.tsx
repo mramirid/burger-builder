@@ -1,4 +1,4 @@
-import { FC, MouseEvent } from "react";
+import { FC } from "react";
 
 import classes from "./Button.module.css";
 import { BtnClickEvent } from "../../types";

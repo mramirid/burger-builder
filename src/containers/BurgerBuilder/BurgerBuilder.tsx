@@ -11,6 +11,7 @@ import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import axiosOrders from "../../axios/orders";
 import { PostResponse } from "../../axios/firebase-types";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 const BurgerBuilder: FC = () => {
   const [ingredientCounts, setIngredientCounts] = useState<IngredientCounts>({
@@ -64,10 +65,13 @@ const BurgerBuilder: FC = () => {
     [totalPrice, togglePurchasable]
   );
 
-  const startPurchase = useCallback(() => setIsPurchasing(true), []);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const startPurchase = useCallback(() => setIsPurchasing(true), []);
+  const cancelPurchase = useCallback(() => setIsPurchasing(false), []);
   const continuePurchase = useCallback(async () => {
     try {
+      setIsLoading(true);
       const response = await axiosOrders.post<PostResponse>("/orders.json", {
         ingredientCounts,
         totalPrice,
@@ -85,10 +89,25 @@ const BurgerBuilder: FC = () => {
       console.log(response);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
+      setIsPurchasing(false);
     }
   }, [ingredientCounts, totalPrice]);
 
-  const cancelPurchase = useCallback(() => setIsPurchasing(false), []);
+  let modalChild: JSX.Element;
+  if (isLoading) {
+    modalChild = <Spinner />;
+  } else {
+    modalChild = (
+      <OrderSummary
+        ingredientCounts={ingredientCounts}
+        totalPrice={totalPrice}
+        onOrdered={continuePurchase}
+        onOrderCanceled={cancelPurchase}
+      />
+    );
+  }
 
   return (
     <>
@@ -101,13 +120,12 @@ const BurgerBuilder: FC = () => {
         removeIngredient={removeIngredient}
         onOrder={startPurchase}
       />
-      <Modal isDisplayed={isPurchasing} onClosed={cancelPurchase}>
-        <OrderSummary
-          ingredientCounts={ingredientCounts}
-          totalPrice={totalPrice}
-          onOrdered={continuePurchase}
-          onOrderCanceled={cancelPurchase}
-        />
+      <Modal
+        isDisplayed={isPurchasing}
+        isLoading={isLoading}
+        onClosed={cancelPurchase}
+      >
+        {modalChild}
       </Modal>
     </>
   );

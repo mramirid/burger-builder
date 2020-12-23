@@ -5,8 +5,9 @@ import Backdrop from "../Backdrop/Backdrop";
 
 interface ModalProps {
   isDisplayed: boolean;
-  onClosed: () => void;
+  isLoading: boolean;
   children: ReactNode;
+  onClosed: () => void;
 }
 
 const Modal: FC<ModalProps> = (props) => {
@@ -26,5 +27,8 @@ const Modal: FC<ModalProps> = (props) => {
 };
 
 export default memo(Modal, (prevProps, nextProps) => {
-  return prevProps.isDisplayed === nextProps.isDisplayed;
+  return (
+    prevProps.isDisplayed === nextProps.isDisplayed &&
+    prevProps.isLoading === nextProps.isLoading
+  );
 });

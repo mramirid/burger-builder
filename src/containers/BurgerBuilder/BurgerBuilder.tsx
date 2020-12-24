@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 
 import Burger from "../../components/Burger/Burger";
 import {
@@ -9,22 +9,35 @@ import { INGREDIENT_PRICES } from "../../components/Burger/constants";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
-import axiosOrders from "../../axios/orders";
-import { PostResponse } from "../../axios/firebase-types";
+import fireAxios, {
+  PostResponse,
+  GetIngredientCounts,
+} from "../../axios/firebase";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 
 const BurgerBuilder: FC = () => {
-  const [ingredientCounts, setIngredientCounts] = useState<IngredientCounts>({
-    breadTop: 1,
-    salad: 0,
-    bacon: 0,
-    cheese: 0,
-    meat: 0,
-    breadBottom: 1,
-  });
+  const [
+    ingredientCounts,
+    setIngredientCounts,
+  ] = useState<IngredientCounts | null>(null);
   const [totalPrice, setTotalPrice] = useState(4.0);
   const [purchasable, setPurchasable] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
+  const [isFetchIngreError, setIsFetchIngreError] = useState(false);
+
+  useEffect(() => {
+    fireAxios
+      .get<GetIngredientCounts>("/ingredients.json")
+      .then((response) => {
+        setIngredientCounts({
+          breadTop: 1,
+          ...response.data,
+          breadBottom: 1,
+        });
+      })
+      .catch(() => setIsFetchIngreError(true));
+  }, []);
 
   const togglePurchasable = useCallback(
     (ingredientCounts: IngredientCounts) => {
@@ -39,6 +52,9 @@ const BurgerBuilder: FC = () => {
   const addIngredient = useCallback(
     (type: IngredientType) => {
       setIngredientCounts((ingredientCounts) => {
+        if (!ingredientCounts) {
+          return null;
+        }
         const updatedIngreCounts = { ...ingredientCounts };
         updatedIngreCounts[type] = ingredientCounts[type] + 1;
         togglePurchasable(updatedIngreCounts);
@@ -52,7 +68,7 @@ const BurgerBuilder: FC = () => {
   const removeIngredient = useCallback(
     (type: IngredientType) => {
       setIngredientCounts((ingredientCounts) => {
-        if (ingredientCounts[type] === 0) {
+        if (!ingredientCounts || ingredientCounts[type] === 0) {
           return ingredientCounts;
         }
         const updatedIngreCounts = { ...ingredientCounts };
@@ -72,7 +88,7 @@ const BurgerBuilder: FC = () => {
   const continuePurchase = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await axiosOrders.post<PostResponse>("/orders.json", {
+      const response = await fireAxios.post<PostResponse>("/orders.json", {
         ingredientCounts,
         totalPrice,
         deliveryMethod: "fastest",
@@ -87,18 +103,36 @@ const BurgerBuilder: FC = () => {
         },
       });
       console.log(response);
-    } catch (error) {
-      console.log(error);
+    } catch (_error) {
     } finally {
       setIsLoading(false);
       setIsPurchasing(false);
     }
   }, [ingredientCounts, totalPrice]);
 
-  let modalChild: JSX.Element;
-  if (isLoading) {
-    modalChild = <Spinner />;
-  } else {
+  let burgerBuilder: JSX.Element | null = null;
+  if (isFetchIngreError) {
+    burgerBuilder = (
+      <p style={{ textAlign: "center" }}>Ingredients can't be loaded</p>
+    );
+  } else if (ingredientCounts) {
+    burgerBuilder = (
+      <>
+        <Burger ingredientCounts={ingredientCounts} />
+        <BuildControls
+          ingredientCounts={ingredientCounts}
+          totalPrice={totalPrice}
+          purchasable={purchasable}
+          addIngredient={addIngredient}
+          removeIngredient={removeIngredient}
+          onOrder={startPurchase}
+        />
+      </>
+    );
+  }
+
+  let modalChild: JSX.Element | null = null;
+  if (!isLoading && ingredientCounts) {
     modalChild = (
       <OrderSummary
         ingredientCounts={ingredientCounts}
@@ -108,27 +142,18 @@ const BurgerBuilder: FC = () => {
       />
     );
   }
-
   return (
     <>
-      <Burger ingredientCounts={ingredientCounts} />
-      <BuildControls
-        ingredientCounts={ingredientCounts}
-        totalPrice={totalPrice}
-        purchasable={purchasable}
-        addIngredient={addIngredient}
-        removeIngredient={removeIngredient}
-        onOrder={startPurchase}
-      />
+      {burgerBuilder || <Spinner />}
       <Modal
         isDisplayed={isPurchasing}
         isLoading={isLoading}
         onClosed={cancelPurchase}
       >
-        {modalChild}
+        {modalChild || <Spinner />}
       </Modal>
     </>
   );
 };
 
-export default BurgerBuilder;
+export default withErrorModal(BurgerBuilder, fireAxios);

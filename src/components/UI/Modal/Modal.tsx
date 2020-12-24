@@ -5,7 +5,7 @@ import Backdrop from "../Backdrop/Backdrop";
 
 interface ModalProps {
   isDisplayed: boolean;
-  isLoading: boolean;
+  isLoading?: boolean;
   children: ReactNode;
   onClosed: () => void;
 }

@@ -42,11 +42,6 @@ function withErrorModal<T>(
     }
 
     componentWillUnmount() {
-      console.log("Remove axios interceptors");
-      console.table({
-        reqID: this.state.interceptorsIDs.req,
-        resID: this.state.interceptorsIDs.res,
-      });
       axios.interceptors.request.eject(this.state.interceptorsIDs.req!);
       axios.interceptors.response.eject(this.state.interceptorsIDs.res!);
     }

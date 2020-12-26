@@ -21,8 +21,6 @@ const BurgerBuilder: FC<RouteComponentProps> = (props) => {
   ] = useState<IngredientCounts | null>(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [purchasable, setPurchasable] = useState(false);
-  const [isPurchasing, setIsPurchasing] = useState(false);
-  const [isFetchIngreError, setIsFetchIngreError] = useState(false);
 
   const togglePurchasable = useCallback(
     (ingredientCounts: IngredientCounts) => {
@@ -33,6 +31,8 @@ const BurgerBuilder: FC<RouteComponentProps> = (props) => {
     },
     []
   );
+
+  const [isFetchIngreError, setIsFetchIngreError] = useState(false);
 
   useEffect(() => {
     fireAxios
@@ -92,49 +92,29 @@ const BurgerBuilder: FC<RouteComponentProps> = (props) => {
     [totalPrice, togglePurchasable]
   );
 
+  const [isPurchasing, setIsPurchasing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const startPurchase = useCallback(() => setIsPurchasing(true), []);
+
   const cancelPurchase = useCallback(() => setIsPurchasing(false), []);
+
   const continuePurchase = useCallback(async () => {
-    // try {
-    //   setIsLoading(true);
-    //   const response = await fireAxios.post<PostResponse>("/orders.json", {
-    //     ingredientCounts,
-    //     totalPrice,
-    //     deliveryMethod: "fastest",
-    //     customer: {
-    //       name: "Amir Muhammad Hakim",
-    //       email: "amir.muh.hakim@gmail.com",
-    //       address: {
-    //         street: "Unknown",
-    //         zipCode: "123456",
-    //         country: "Indonesia",
-    //       },
-    //     },
-    //   });
-    //   console.log(response);
-    // } catch (_error) {
-    // } finally {
-    //   setIsLoading(false);
-    //   setIsPurchasing(false);
-    // }
     let queryParams: string[] = [];
     if (ingredientCounts) {
       queryParams = Object.keys(ingredientCounts).map((key) => {
         const type = key as IngredientType;
-        return (
-          encodeURIComponent(type) +
-          "=" +
-          encodeURIComponent(ingredientCounts[type])
-        );
+        const encodedType = encodeURIComponent(type);
+        const encodedCount = encodeURIComponent(ingredientCounts[type]);
+        return `${encodedType}=${encodedCount}`;
       });
+      queryParams.push(`totalPrice=${totalPrice}`);
     }
     props.history.push({
       pathname: "/checkout",
       search: "?" + queryParams.join("&"),
     });
-  }, [props.history, ingredientCounts]);
+  }, [ingredientCounts, totalPrice, props.history]);
 
   let burgerBuilder: JSX.Element | null = null;
   if (isFetchIngreError) {

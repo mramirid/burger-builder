@@ -1,13 +1,15 @@
 import { FC, useCallback, useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { Route, RouteComponentProps } from "react-router-dom";
 
 import {
   IngredientCounts,
   IngredientType,
 } from "../../components/Burger/types";
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
+import ContactData from "./ContactData/ContactData";
 
 const Checkout: FC<RouteComponentProps> = (props) => {
+  const [totalPrice, setTotalPrice] = useState(0);
   const [ingredientCounts, setIngreCounts] = useState<IngredientCounts>({
     breadTop: 0,
     bacon: 0,
@@ -21,10 +23,14 @@ const Checkout: FC<RouteComponentProps> = (props) => {
     setIngreCounts((prevIngreCounts) => {
       const query = new URLSearchParams(props.location.search);
       const submittedIngreCounts: IngredientCounts = { ...prevIngreCounts };
-      for (const param of query.entries()) {
-        const type = param[0] as IngredientType;
-        const count = +param[1];
-        submittedIngreCounts[type] = count;
+      for (const [key, value] of query.entries()) {
+        if (key === "totalPrice") {
+          setTotalPrice(() => +value);
+        } else {
+          const type = key as IngredientType;
+          const count = +value;
+          submittedIngreCounts[type] = count;
+        }
       }
       return submittedIngreCounts;
     });
@@ -44,6 +50,16 @@ const Checkout: FC<RouteComponentProps> = (props) => {
         ingredientCounts={ingredientCounts}
         onCheckoutCanceled={cancelCheckout}
         onCheckoutContinued={continueCheckout}
+      />
+      <Route
+        path={`${props.match.path}/contact-data`}
+        render={(props) => (
+          <ContactData
+            ingredientCounts={ingredientCounts}
+            totalPrice={totalPrice}
+            {...props}
+          />
+        )}
       />
     </>
   );

@@ -1,12 +1,15 @@
-import { FC } from "react";
+import { EventHandler, FC } from "react";
 
 import classes from "./CheckoutSummary.module.css";
 import { IngredientCounts } from "../../Burger/types";
 import Burger from "../../Burger/Burger";
 import Button from "../../UI/Button/Button";
+import { BtnClickEvent } from "../../types";
 
 interface CheckoutSummaryProps {
   ingredientCounts: IngredientCounts;
+  onCheckoutCanceled: EventHandler<BtnClickEvent>;
+  onCheckoutContinued: EventHandler<BtnClickEvent>;
 }
 
 const CheckoutSummary: FC<CheckoutSummaryProps> = (props) => (
@@ -15,10 +18,10 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = (props) => (
     <div style={{ width: "100%", margin: "auto" }}>
       <Burger ingredientCounts={props.ingredientCounts} />
     </div>
-    <Button btnType="Danger" onClicked={() => {}}>
+    <Button btnType="Danger" onClicked={props.onCheckoutCanceled}>
       CANCEL
     </Button>
-    <Button btnType="Success" onClicked={() => {}}>
+    <Button btnType="Success" onClicked={props.onCheckoutContinued}>
       CONTINUE
     </Button>
   </div>

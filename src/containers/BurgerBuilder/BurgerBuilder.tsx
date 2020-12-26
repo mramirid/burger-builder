@@ -1,53 +1,64 @@
 import { FC, useCallback, useEffect, useState } from "react";
+import { RouteComponentProps } from "react-router-dom";
 
-import Burger from "../../components/Burger/Burger";
 import {
   IngredientCounts,
   IngredientType,
 } from "../../components/Burger/types";
+import fireAxios, { GetIngredientCounts } from "../../axios/firebase";
 import { INGREDIENT_PRICES } from "../../components/Burger/constants";
+import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
-import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
-import fireAxios, {
-  PostResponse,
-  GetIngredientCounts,
-} from "../../axios/firebase";
+import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 
-const BurgerBuilder: FC = () => {
+const BurgerBuilder: FC<RouteComponentProps> = (props) => {
   const [
     ingredientCounts,
     setIngredientCounts,
   ] = useState<IngredientCounts | null>(null);
-  const [totalPrice, setTotalPrice] = useState(4.0);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [purchasable, setPurchasable] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isFetchIngreError, setIsFetchIngreError] = useState(false);
+
+  const togglePurchasable = useCallback(
+    (ingredientCounts: IngredientCounts) => {
+      const totalCounts = Object.keys(ingredientCounts)
+        .map((key) => ingredientCounts[key as IngredientType])
+        .reduce((sum, curCount) => sum + curCount, 0);
+      setPurchasable(totalCounts > 2);
+    },
+    []
+  );
 
   useEffect(() => {
     fireAxios
       .get<GetIngredientCounts>("/ingredients.json")
       .then((response) => {
-        setIngredientCounts({
+        const loadedIngreCounts = {
           breadTop: 1,
           ...response.data,
           breadBottom: 1,
+        };
+
+        const totalPrice = Object.keys(loadedIngreCounts)
+          .map((key) => {
+            const type = key as IngredientType;
+            return INGREDIENT_PRICES[type] * loadedIngreCounts[type];
+          })
+          .reduce((sum, curPrice) => sum + curPrice, 0);
+
+        setIngredientCounts(() => {
+          setTotalPrice(totalPrice);
+          togglePurchasable(loadedIngreCounts);
+          return loadedIngreCounts;
         });
       })
       .catch(() => setIsFetchIngreError(true));
-  }, []);
-
-  const togglePurchasable = useCallback(
-    (ingredientCounts: IngredientCounts) => {
-      const sum = Object.keys(ingredientCounts)
-        .map((key) => ingredientCounts[key as IngredientType])
-        .reduce((sum, curCount) => sum + curCount, 0);
-      setPurchasable(sum > 2);
-    },
-    []
-  );
+  }, [togglePurchasable]);
 
   const addIngredient = useCallback(
     (type: IngredientType) => {
@@ -86,29 +97,44 @@ const BurgerBuilder: FC = () => {
   const startPurchase = useCallback(() => setIsPurchasing(true), []);
   const cancelPurchase = useCallback(() => setIsPurchasing(false), []);
   const continuePurchase = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fireAxios.post<PostResponse>("/orders.json", {
-        ingredientCounts,
-        totalPrice,
-        deliveryMethod: "fastest",
-        customer: {
-          name: "Amir Muhammad Hakim",
-          email: "amir.muh.hakim@gmail.com",
-          address: {
-            street: "Unknown",
-            zipCode: "123456",
-            country: "Indonesia",
-          },
-        },
+    // try {
+    //   setIsLoading(true);
+    //   const response = await fireAxios.post<PostResponse>("/orders.json", {
+    //     ingredientCounts,
+    //     totalPrice,
+    //     deliveryMethod: "fastest",
+    //     customer: {
+    //       name: "Amir Muhammad Hakim",
+    //       email: "amir.muh.hakim@gmail.com",
+    //       address: {
+    //         street: "Unknown",
+    //         zipCode: "123456",
+    //         country: "Indonesia",
+    //       },
+    //     },
+    //   });
+    //   console.log(response);
+    // } catch (_error) {
+    // } finally {
+    //   setIsLoading(false);
+    //   setIsPurchasing(false);
+    // }
+    let queryParams: string[] = [];
+    if (ingredientCounts) {
+      queryParams = Object.keys(ingredientCounts).map((key) => {
+        const type = key as IngredientType;
+        return (
+          encodeURIComponent(type) +
+          "=" +
+          encodeURIComponent(ingredientCounts[type])
+        );
       });
-      console.log(response);
-    } catch (_error) {
-    } finally {
-      setIsLoading(false);
-      setIsPurchasing(false);
     }
-  }, [ingredientCounts, totalPrice]);
+    props.history.push({
+      pathname: "/checkout",
+      search: "?" + queryParams.join("&"),
+    });
+  }, [props.history, ingredientCounts]);
 
   let burgerBuilder: JSX.Element | null = null;
   if (isFetchIngreError) {

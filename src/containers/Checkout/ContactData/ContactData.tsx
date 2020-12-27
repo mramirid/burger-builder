@@ -1,15 +1,23 @@
-import { EventHandler, FC, useCallback, useState } from "react";
+import { FC, useCallback, useState } from "react";
 
 import classes from "./ContactData.module.css";
+import {
+  PostContact,
+  PostOrder,
+  PostResponse,
+} from "../../../axios/firebase/types";
 import Button from "../../../components/UI/Button/Button";
-import fireAxios from "../../../axios/firebase/instance";
-import { PostOrder, PostResponse } from "../../../axios/firebase/types";
-import { InputContactWithConfigs } from "./types";
-import { IngredientCounts } from "../../../components/Burger/types";
-import { BtnClickEvent } from "../../../components/types";
 import Spinner from "../../../components/UI/Spinner/Spinner";
-import { RouteComponentProps } from "react-router-dom";
 import Input from "../../../components/UI/Input/Input";
+import fireAxios from "../../../axios/firebase/instance";
+import {
+  ContactFields,
+  FormSubmitHandler,
+  InputContactWithConfigs,
+} from "./types";
+import { IngredientCounts } from "../../../components/Burger/types";
+import { RouteComponentProps } from "react-router-dom";
+import { InputChangedEvent } from "../../../components/UI/Input/types";
 
 interface ContactDataProps {
   ingredientCounts: IngredientCounts;
@@ -17,7 +25,8 @@ interface ContactDataProps {
 }
 
 const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
-  const [inputContactConfigs] = useState<InputContactWithConfigs>({
+  const [isLoading, setIsLoading] = useState(false);
+  const [inputContact, setInputContact] = useState<InputContactWithConfigs>({
     name: {
       value: "",
       label: "Name",
@@ -68,6 +77,7 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
       label: "Delivery Method",
       tag: "select",
       attrs: {
+        placeholder: "Select your delivery method",
         options: [
           { value: "fastest", displayValue: "Fastest" },
           { value: "cheapest", displayValue: "Cheapest" },
@@ -76,26 +86,29 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
     },
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const order = useCallback<EventHandler<BtnClickEvent>>(
+  const order = useCallback<FormSubmitHandler>(
     async (event) => {
       try {
         event.preventDefault();
         setIsLoading(true);
 
+        const submittedContact: PostContact = {
+          name: "",
+          email: "",
+          street: "",
+          zipCode: "",
+          country: "",
+          deliveryMethod: "",
+        };
+        for (const key in inputContact) {
+          const fieldName = key as ContactFields;
+          submittedContact[fieldName] = inputContact[fieldName].value;
+        }
+
         const submittedOrder: PostOrder = {
           ingredientCounts: props.ingredientCounts,
           totalPrice: props.totalPrice,
-          deliveryMethod: "fastest",
-          contact: {
-            name: "Amir Muhammad Hakim",
-            email: "amir.muh.hakim@gmail.com",
-            address: {
-              street: "Unknown",
-              zipCode: "123456",
-            },
-          },
+          contact: submittedContact,
         };
         const response = await fireAxios.post<PostResponse>(
           "/orders.json",
@@ -112,32 +125,42 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
         setIsLoading(false);
       }
     },
-    [props.history, props.ingredientCounts, props.totalPrice]
+    [inputContact, props]
+  );
+
+  const changeInput = useCallback(
+    (event: InputChangedEvent, fieldName: string) => {
+      setInputContact((inputContact) => {
+        const updatedInputContact = { ...inputContact };
+        const updatedInputField = { ...updatedInputContact[fieldName] };
+        updatedInputField.value = event.target.value;
+        updatedInputContact[fieldName] = updatedInputField;
+        return updatedInputContact;
+      });
+    },
+    []
   );
 
   let form: JSX.Element | null = null;
   if (isLoading) {
     form = <Spinner />;
   } else {
-    const formInputs = Object.keys(inputContactConfigs).map((key) => {
-      const inputConfig = inputContactConfigs[key];
-      return (
-        <Input
-          key={key}
-          label={inputConfig.label}
-          tag={inputConfig.tag}
-          attrs={inputConfig.attrs}
-          value={inputConfig.value}
-        />
-      );
-    });
-
     form = (
-      <form>
-        {formInputs}
-        <Button btnType="Success" onClicked={order}>
-          ORDER
-        </Button>
+      <form onSubmit={order}>
+        {Object.keys(inputContact).map((fieldName) => {
+          const inputConfig = inputContact[fieldName];
+          return (
+            <Input
+              key={fieldName}
+              label={inputConfig.label}
+              tag={inputConfig.tag}
+              attrs={inputConfig.attrs}
+              value={inputConfig.value}
+              onInputChanged={(event) => changeInput(event, fieldName)}
+            />
+          );
+        })}
+        <Button btnType="Success">ORDER</Button>
       </form>
     );
   }

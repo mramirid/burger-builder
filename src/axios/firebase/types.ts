@@ -2,10 +2,7 @@ import {
   IngredientCounts,
   IngredientType,
 } from "../../components/Burger/types";
-import {
-  Contact,
-  DeliveryMethod,
-} from "../../containers/Checkout/ContactData/types";
+import { ContactFields } from "../../containers/Checkout/ContactData/types";
 
 /*
  * Types for Firebase payload
@@ -17,15 +14,23 @@ export interface GetIngredientCounts {
   [IngredientType.Meat]: number;
 }
 
-export interface PostResponse {
-  name: string;
+export interface PostContact {
+  [ContactFields.Name]: string;
+  [ContactFields.Email]: string;
+  [ContactFields.Street]: string;
+  [ContactFields.Country]: string;
+  [ContactFields.ZipCode]: string;
+  [ContactFields.DeliveryMethod]: string;
 }
 
 export interface PostOrder {
   ingredientCounts: IngredientCounts;
   totalPrice: number;
-  deliveryMethod: DeliveryMethod;
-  contact: Contact;
+  contact: PostContact;
+}
+
+export interface PostResponse {
+  name: string;
 }
 
 export interface GetOrders {

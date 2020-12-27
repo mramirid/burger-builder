@@ -5,7 +5,7 @@ import { BtnClickEvent } from "../../types";
 
 interface ButtonProps {
   btnType: "Danger" | "Success";
-  onClicked: (event: BtnClickEvent) => void;
+  onClicked?: (event: BtnClickEvent) => void;
 }
 
 const Button: FC<ButtonProps> = (props) => (

@@ -1,3 +1,5 @@
+import { ChangeEvent, EventHandler } from "react";
+
 type InputFieldTag = "input" | "textarea" | "select";
 
 type InputFieldType = "text" | "email" | "password" | "number";
@@ -15,3 +17,9 @@ export interface InputConfig<O = string> {
     }[];
   };
 }
+
+export type InputChangedEvent = ChangeEvent<
+  HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+>;
+
+export type InputChangedHandler = EventHandler<InputChangedEvent>;

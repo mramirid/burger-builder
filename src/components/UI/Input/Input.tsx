@@ -1,9 +1,11 @@
 import { FC } from "react";
 
 import classes from "./Input.module.css";
-import { InputConfig } from "./types";
+import { InputChangedHandler, InputConfig } from "./types";
 
-interface InputProps extends InputConfig {}
+interface InputProps extends InputConfig {
+  onInputChanged: InputChangedHandler;
+}
 
 const Input: FC<InputProps> = (props) => {
   let inputField: JSX.Element | null = null;
@@ -14,6 +16,7 @@ const Input: FC<InputProps> = (props) => {
           className={classes.InputField}
           value={props.value}
           {...props.attrs}
+          onChange={props.onInputChanged}
         />
       );
       break;
@@ -23,12 +26,20 @@ const Input: FC<InputProps> = (props) => {
           className={classes.InputField}
           value={props.value}
           {...props.attrs}
+          onChange={props.onInputChanged}
         />
       );
       break;
     case "select":
       inputField = (
-        <select className={classes.InputField} value={props.value}>
+        <select
+          className={classes.InputField}
+          value={props.value}
+          onChange={props.onInputChanged}
+        >
+          <option value="" selected>
+            {props.attrs.placeholder}
+          </option>
           {props.attrs.options!.map((option) => (
             <option key={option.value} value={option.value}>
               {option.displayValue}

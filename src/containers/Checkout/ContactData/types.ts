@@ -1,22 +1,31 @@
+import { EventHandler, FormEvent } from "react";
+
+import { PostContact } from "../../../axios/firebase/types";
 import { InputConfig } from "../../../components/UI/Input/types";
 
-export interface Contact {
-  name: string;
-  email: string;
-  address: {
-    street: string;
-    zipCode: string;
-  };
+export enum ContactFields {
+  Name = "name",
+  Email = "email",
+  Street = "street",
+  Country = "country",
+  ZipCode = "zipCode",
+  DeliveryMethod = "deliveryMethod",
+}
+
+export interface Contact extends PostContact {
+  id: string;
 }
 
 export type DeliveryMethod = "cheapest" | "fastest";
 
 export interface InputContactWithConfigs {
-  name: InputConfig;
-  email: InputConfig;
-  street: InputConfig;
-  country: InputConfig;
-  zipCode: InputConfig;
-  deliveryMethod: InputConfig<DeliveryMethod>;
+  [ContactFields.Name]: InputConfig;
+  [ContactFields.Email]: InputConfig;
+  [ContactFields.Street]: InputConfig;
+  [ContactFields.Country]: InputConfig;
+  [ContactFields.ZipCode]: InputConfig;
+  [ContactFields.DeliveryMethod]: InputConfig<DeliveryMethod>;
   [x: string]: InputConfig | InputConfig<DeliveryMethod>;
 }
+
+export type FormSubmitHandler = EventHandler<FormEvent<HTMLFormElement>>;

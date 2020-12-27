@@ -9,6 +9,7 @@ import { IngredientCounts } from "../../../components/Burger/types";
 import { BtnClickEvent } from "../../../components/types";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import { RouteComponentProps } from "react-router-dom";
+import Input from "../../../components/UI/Input/Input";
 
 interface ContactDataProps {
   ingredientCounts: IngredientCounts;
@@ -70,10 +71,10 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
   } else {
     form = (
       <form>
-        <input type="text" name="name" placeholder="Your Name" />
-        <input type="email" name="email" placeholder="Your Email" />
-        <input type="text" name="street" placeholder="Street" />
-        <input type="text" name="zip-code" placeholder="Zip Code" />
+        <Input tag="input" label="Your Name" type="text" name="name" />
+        <Input tag="input" label="Your Email" type="email" name="email" />
+        <Input tag="input" label="Street" type="text" name="street" />
+        <Input tag="input" label="Zip Code" type="text" name="zip-code" />
         <Button btnType="Success" onClicked={order}>
           ORDER
         </Button>

@@ -3,7 +3,7 @@ import { FC } from "react";
 import classes from "./Input.module.css";
 import { InputConfig } from "./types";
 
-interface InputProps extends InputConfig<unknown> {}
+interface InputProps extends InputConfig {}
 
 const Input: FC<InputProps> = (props) => {
   let inputField: JSX.Element | null = null;
@@ -30,7 +30,7 @@ const Input: FC<InputProps> = (props) => {
       inputField = (
         <select className={classes.InputField} value={props.value}>
           {props.attrs.options!.map((option) => (
-            <option key={option.value as string} value={option.value as string}>
+            <option key={option.value} value={option.value}>
               {option.displayValue}
             </option>
           ))}

@@ -2,7 +2,10 @@ import {
   IngredientCounts,
   IngredientType,
 } from "../../components/Burger/types";
-import { Contact } from "../../containers/Checkout/ContactData/types";
+import {
+  Contact,
+  DeliveryMethod,
+} from "../../containers/Checkout/ContactData/types";
 
 /*
  * Types for Firebase payload
@@ -21,7 +24,7 @@ export interface PostResponse {
 export interface PostOrder {
   ingredientCounts: IngredientCounts;
   totalPrice: number;
-  deliveryMethod: string;
+  deliveryMethod: DeliveryMethod;
   contact: Contact;
 }
 

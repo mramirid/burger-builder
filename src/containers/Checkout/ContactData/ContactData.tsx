@@ -4,7 +4,7 @@ import classes from "./ContactData.module.css";
 import Button from "../../../components/UI/Button/Button";
 import fireAxios from "../../../axios/firebase/instance";
 import { PostOrder, PostResponse } from "../../../axios/firebase/types";
-// import { Contact } from "./types";
+import { InputContactWithConfigs } from "./types";
 import { IngredientCounts } from "../../../components/Burger/types";
 import { BtnClickEvent } from "../../../components/types";
 import Spinner from "../../../components/UI/Spinner/Spinner";
@@ -17,14 +17,64 @@ interface ContactDataProps {
 }
 
 const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
-  // const [contact] = useState<Contact>({
-  //   name: "",
-  //   email: "",
-  //   address: {
-  //     street: "",
-  //     zipCode: "",
-  //   },
-  // });
+  const [inputContactConfigs] = useState<InputContactWithConfigs>({
+    name: {
+      value: "",
+      label: "Name",
+      tag: "input",
+      attrs: {
+        type: "text",
+        placeholder: "Insert your name",
+      },
+    },
+    email: {
+      value: "",
+      label: "Email",
+      tag: "input",
+      attrs: {
+        type: "email",
+        placeholder: "Insert your email",
+      },
+    },
+    street: {
+      value: "",
+      label: "Street",
+      tag: "input",
+      attrs: {
+        type: "text",
+        placeholder: "Insert your street name",
+      },
+    },
+    country: {
+      value: "",
+      label: "Country",
+      tag: "input",
+      attrs: {
+        type: "text",
+        placeholder: "Insert your country name",
+      },
+    },
+    zipCode: {
+      value: "",
+      label: "ZIP Code",
+      tag: "input",
+      attrs: {
+        type: "number",
+        placeholder: "Insert your ZIP code",
+      },
+    },
+    deliveryMethod: {
+      value: "",
+      label: "Delivery Method",
+      tag: "select",
+      attrs: {
+        options: [
+          { value: "fastest", displayValue: "Fastest" },
+          { value: "cheapest", displayValue: "Cheapest" },
+        ],
+      },
+    },
+  });
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -69,12 +119,22 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
   if (isLoading) {
     form = <Spinner />;
   } else {
+    const formInputs = Object.keys(inputContactConfigs).map((key) => {
+      const inputConfig = inputContactConfigs[key];
+      return (
+        <Input
+          key={key}
+          label={inputConfig.label}
+          tag={inputConfig.tag}
+          attrs={inputConfig.attrs}
+          value={inputConfig.value}
+        />
+      );
+    });
+
     form = (
       <form>
-        <Input tag="input" label="Your Name" type="text" name="name" />
-        <Input tag="input" label="Your Email" type="email" name="email" />
-        <Input tag="input" label="Street" type="text" name="street" />
-        <Input tag="input" label="Zip Code" type="text" name="zip-code" />
+        {formInputs}
         <Button btnType="Success" onClicked={order}>
           ORDER
         </Button>

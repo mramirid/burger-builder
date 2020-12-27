@@ -1,7 +1,8 @@
-import axios from "axios";
-
-import { IngredientCounts, IngredientType } from "../components/Burger/types";
-import { Contact } from "../containers/Checkout/ContactData/types";
+import {
+  IngredientCounts,
+  IngredientType,
+} from "../../components/Burger/types";
+import { Contact } from "../../containers/Checkout/ContactData/types";
 
 /*
  * Types for Firebase payload
@@ -24,11 +25,6 @@ export interface PostOrder {
   contact: Contact;
 }
 
-/*
- * Axios instance for Firebase Realtime Database
- */
-const instance = axios.create({
-  baseURL: process.env.REACT_APP_DB_URL,
-});
-
-export default instance;
+export interface GetOrders {
+  [orderId: string]: PostOrder;
+}

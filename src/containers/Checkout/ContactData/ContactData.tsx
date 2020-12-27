@@ -2,8 +2,9 @@ import { EventHandler, FC, useCallback, useState } from "react";
 
 import classes from "./ContactData.module.css";
 import Button from "../../../components/UI/Button/Button";
-import fireAxios, { PostOrder, PostResponse } from "../../../axios/firebase";
-import { Contact } from "./types";
+import fireAxios from "../../../axios/firebase/instance";
+import { PostOrder, PostResponse } from "../../../axios/firebase/types";
+// import { Contact } from "./types";
 import { IngredientCounts } from "../../../components/Burger/types";
 import { BtnClickEvent } from "../../../components/types";
 import Spinner from "../../../components/UI/Spinner/Spinner";
@@ -15,14 +16,14 @@ interface ContactDataProps {
 }
 
 const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
-  const [contact] = useState<Contact>({
-    name: "",
-    email: "",
-    address: {
-      street: "",
-      zipCode: "",
-    },
-  });
+  // const [contact] = useState<Contact>({
+  //   name: "",
+  //   email: "",
+  //   address: {
+  //     street: "",
+  //     zipCode: "",
+  //   },
+  // });
 
   const [isLoading, setIsLoading] = useState(false);
 

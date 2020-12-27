@@ -5,7 +5,8 @@ import {
   IngredientCounts,
   IngredientType,
 } from "../../components/Burger/types";
-import fireAxios, { GetIngredientCounts } from "../../axios/firebase";
+import fireAxios from "../../axios/firebase/instance";
+import { GetIngredientCounts } from "../../axios/firebase/types";
 import { INGREDIENT_PRICES } from "../../components/Burger/constants";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
@@ -93,7 +94,7 @@ const BurgerBuilder: FC<RouteComponentProps> = (props) => {
   );
 
   const [isPurchasing, setIsPurchasing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   const startPurchase = useCallback(() => setIsPurchasing(true), []);
 

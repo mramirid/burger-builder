@@ -1,16 +1,46 @@
-import { FC } from "react";
+import { CSSProperties, FC } from "react";
+import { IngredientType } from "../Burger/types";
 
 import classes from "./Order.module.css";
+import { IOrder } from "./types";
 
-interface OrderProps {}
+interface OrderProps {
+  order: IOrder;
+}
 
-const Order: FC<OrderProps> = (props) => (
-  <div className={classes.Order}>
-    <p>Ingredients: Salad (1)</p>
-    <p>
-      Price: <strong>USD 5.45</strong>
-    </p>
-  </div>
-);
+const Order: FC<OrderProps> = ({ order }) => {
+  const ingreCountElements = Object.keys(order.ingredientCounts).map((key) => {
+    const type = key as IngredientType;
+    const styles: CSSProperties = {
+      textTransform: "capitalize",
+      display: "inline-block",
+      margin: "0 8px",
+      border: "1px solid #ccc",
+      padding: "5px",
+    };
+
+    if (
+      type === IngredientType.BreadTop ||
+      type === IngredientType.BreadBottom
+    ) {
+      return null;
+    }
+
+    return (
+      <span key={type} style={styles}>
+        {type} ({order.ingredientCounts[type]})
+      </span>
+    );
+  });
+
+  return (
+    <div className={classes.Order}>
+      <p>Ingredients: {ingreCountElements}</p>
+      <p>
+        Price: <strong>USD {order.totalPrice.toFixed(2)}</strong>
+      </p>
+    </div>
+  );
+};
 
 export default Order;

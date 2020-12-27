@@ -6,12 +6,10 @@ import NavigationItem from "./NavigationItem/NavigationItem";
 const NavigationItems: FC = () => (
   <nav className={classes.NavigationItems}>
     <ul>
-      <NavigationItem to="/" isActive>
+      <NavigationItem to="/" exact>
         Burger Builder
       </NavigationItem>
-      <NavigationItem to="/" isActive={false}>
-        Checkout
-      </NavigationItem>
+      <NavigationItem to="/orders">Orders</NavigationItem>
     </ul>
   </nav>
 );

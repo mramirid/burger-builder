@@ -17,7 +17,10 @@ import {
 } from "./types";
 import { IngredientCounts } from "../../../components/Burger/types";
 import { RouteComponentProps } from "react-router-dom";
-import { InputChangedEvent } from "../../../components/UI/Input/types";
+import {
+  InputChangedEvent,
+  ValidationRules,
+} from "../../../components/UI/Input/types";
 
 interface ContactDataProps {
   ingredientCounts: IngredientCounts;
@@ -26,6 +29,7 @@ interface ContactDataProps {
 
 const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [formIsValid, setFormIsValid] = useState(false);
   const [inputContact, setInputContact] = useState<InputContactWithConfigs>({
     name: {
       value: "",
@@ -34,6 +38,14 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
       attrs: {
         type: "text",
         placeholder: "Insert your name",
+      },
+      validation: {
+        touched: false,
+        isValid: false,
+        errorMessages: [],
+        rules: {
+          required: true,
+        },
       },
     },
     email: {
@@ -44,6 +56,14 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
         type: "email",
         placeholder: "Insert your email",
       },
+      validation: {
+        touched: false,
+        isValid: false,
+        errorMessages: [],
+        rules: {
+          required: true,
+        },
+      },
     },
     street: {
       value: "",
@@ -52,6 +72,14 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
       attrs: {
         type: "text",
         placeholder: "Insert your street name",
+      },
+      validation: {
+        touched: false,
+        isValid: false,
+        errorMessages: [],
+        rules: {
+          required: true,
+        },
       },
     },
     country: {
@@ -62,6 +90,14 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
         type: "text",
         placeholder: "Insert your country name",
       },
+      validation: {
+        touched: false,
+        isValid: false,
+        errorMessages: [],
+        rules: {
+          required: true,
+        },
+      },
     },
     zipCode: {
       value: "",
@@ -71,20 +107,67 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
         type: "number",
         placeholder: "Insert your ZIP code",
       },
+      validation: {
+        touched: false,
+        isValid: false,
+        errorMessages: [],
+        rules: {
+          required: true,
+          minLength: 6,
+          maxLength: 6,
+        },
+      },
     },
     deliveryMethod: {
       value: "",
       label: "Delivery Method",
       tag: "select",
       attrs: {
-        placeholder: "Select your delivery method",
         options: [
+          { value: "", displayValue: "Select your delivery method" },
           { value: "fastest", displayValue: "Fastest" },
           { value: "cheapest", displayValue: "Cheapest" },
         ],
       },
+      validation: {
+        touched: false,
+        isValid: false,
+        errorMessages: [],
+        rules: {
+          required: true,
+        },
+      },
     },
   });
+
+  const validate = useCallback((fieldValue: string, rules: ValidationRules) => {
+    let isValid = true;
+    let errorMessages: string[] = [];
+
+    if (rules.required) {
+      const isNotEmpty = fieldValue.trim().length !== 0;
+      isValid = isNotEmpty && isValid;
+      if (!isNotEmpty) {
+        errorMessages.push("This field is required");
+      }
+    }
+    if (rules.minLength) {
+      const isMinLengthSatisfied = fieldValue.trim().length >= rules.minLength;
+      isValid = isMinLengthSatisfied && isValid;
+      if (!isMinLengthSatisfied) {
+        errorMessages.push("6 characters minimum");
+      }
+    }
+    if (rules.maxLength) {
+      const isMaxLengthSatisfied = fieldValue.trim().length <= rules.maxLength;
+      isValid = isMaxLengthSatisfied && isValid;
+      if (!isMaxLengthSatisfied) {
+        errorMessages.push("6 character maximum");
+      }
+    }
+
+    return { isValid, errorMessages };
+  }, []);
 
   const order = useCallback<FormSubmitHandler>(
     async (event) => {
@@ -133,12 +216,34 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
       setInputContact((inputContact) => {
         const updatedInputContact = { ...inputContact };
         const updatedInputField = { ...updatedInputContact[fieldName] };
+
         updatedInputField.value = event.target.value;
+        if (updatedInputField.validation) {
+          const { isValid, errorMessages } = validate(
+            event.target.value,
+            updatedInputField.validation.rules
+          );
+          updatedInputField.validation.touched = true;
+          updatedInputField.validation.isValid = isValid;
+          updatedInputField.validation.errorMessages = errorMessages;
+        }
         updatedInputContact[fieldName] = updatedInputField;
+
+        setFormIsValid(() => {
+          let formIsValid = true;
+          for (const fieldName in updatedInputContact) {
+            const fieldValidation = updatedInputContact[fieldName].validation;
+            if (fieldValidation) {
+              formIsValid = fieldValidation.isValid && formIsValid;
+            }
+          }
+          return formIsValid;
+        });
+
         return updatedInputContact;
       });
     },
-    []
+    [validate]
   );
 
   let form: JSX.Element | null = null;
@@ -152,15 +257,14 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
           return (
             <Input
               key={fieldName}
-              label={inputConfig.label}
-              tag={inputConfig.tag}
-              attrs={inputConfig.attrs}
-              value={inputConfig.value}
+              {...inputConfig}
               onInputChanged={(event) => changeInput(event, fieldName)}
             />
           );
         })}
-        <Button btnType="Success">ORDER</Button>
+        <Button btnType="Success" disabled={!formIsValid}>
+          ORDER
+        </Button>
       </form>
     );
   }

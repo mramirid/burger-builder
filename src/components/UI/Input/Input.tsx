@@ -8,12 +8,27 @@ interface InputProps extends InputConfig {
 }
 
 const Input: FC<InputProps> = (props) => {
+  const inputFieldClasses = [classes.InputField];
+  let errorMessages: JSX.Element | null = null;
+  if (
+    props.validation &&
+    !props.validation.isValid &&
+    props.validation.touched
+  ) {
+    inputFieldClasses.push(classes.Invalid);
+    errorMessages = (
+      <p className={classes.ErrorMessages}>
+        {props.validation.errorMessages.join(" | ")}
+      </p>
+    );
+  }
+
   let inputField: JSX.Element | null = null;
   switch (props.tag) {
     case "input":
       inputField = (
         <input
-          className={classes.InputField}
+          className={inputFieldClasses.join(" ")}
           value={props.value}
           {...props.attrs}
           onChange={props.onInputChanged}
@@ -23,7 +38,7 @@ const Input: FC<InputProps> = (props) => {
     case "textarea":
       inputField = (
         <textarea
-          className={classes.InputField}
+          className={inputFieldClasses.join(" ")}
           value={props.value}
           {...props.attrs}
           onChange={props.onInputChanged}
@@ -33,13 +48,10 @@ const Input: FC<InputProps> = (props) => {
     case "select":
       inputField = (
         <select
-          className={classes.InputField}
-          value={props.value}
+          className={inputFieldClasses.join(" ")}
           onChange={props.onInputChanged}
+          defaultValue={props.value}
         >
-          <option value="" selected>
-            {props.attrs.placeholder}
-          </option>
           {props.attrs.options!.map((option) => (
             <option key={option.value} value={option.value}>
               {option.displayValue}
@@ -56,6 +68,7 @@ const Input: FC<InputProps> = (props) => {
     <div className={classes.Input}>
       <label className={classes.Label}>{props.label}</label>
       {inputField}
+      {errorMessages}
     </div>
   );
 };

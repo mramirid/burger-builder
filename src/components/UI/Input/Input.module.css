@@ -26,3 +26,14 @@
   outline: none;
   background-color: #ccc;
 }
+
+.Invalid {
+  border: 1px solid red;
+  background-color: #fda49a;
+}
+
+.ErrorMessages {
+  color: red;
+  margin: 5px 0;
+  text-align: start;
+}

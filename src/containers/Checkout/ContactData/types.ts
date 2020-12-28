@@ -16,7 +16,7 @@ export interface Contact extends PostContact {
   id: string;
 }
 
-export type DeliveryMethod = "cheapest" | "fastest";
+export type DeliveryMethod = "" | "cheapest" | "fastest";
 
 export interface InputContactWithConfigs {
   [ContactFields.Name]: InputConfig;

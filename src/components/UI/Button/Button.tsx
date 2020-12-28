@@ -5,12 +5,14 @@ import { BtnClickEvent } from "../../types";
 
 interface ButtonProps {
   btnType: "Danger" | "Success";
+  disabled?: boolean;
   onClicked?: (event: BtnClickEvent) => void;
 }
 
 const Button: FC<ButtonProps> = (props) => (
   <button
     className={[classes.Button, classes[props.btnType]].join(" ")}
+    disabled={props.disabled}
     onClick={props.onClicked}
   >
     {props.children}

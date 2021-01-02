@@ -1,33 +1,31 @@
 import { FC, useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 
 import classes from "./ContactData.module.css";
+import Button from "../../../components/UI/Button/Button";
+import Spinner from "../../../components/UI/Spinner/Spinner";
+import Input from "../../../components/UI/Input/Input";
+import fireAxios from "../../../axios/firebase/instance";
+import { RouteComponentProps } from "react-router-dom";
 import {
   PostContact,
   PostOrder,
   PostResponse,
 } from "../../../axios/firebase/types";
-import Button from "../../../components/UI/Button/Button";
-import Spinner from "../../../components/UI/Spinner/Spinner";
-import Input from "../../../components/UI/Input/Input";
-import fireAxios from "../../../axios/firebase/instance";
 import {
   ContactFields,
   FormSubmitHandler,
   InputContactWithConfigs,
 } from "./types";
-import { IngredientCounts } from "../../../components/Burger/types";
-import { RouteComponentProps } from "react-router-dom";
 import {
   InputChangedEvent,
   ValidationRules,
 } from "../../../components/UI/Input/types";
+import { RootState } from "../../../store";
 
-interface ContactDataProps {
-  ingredientCounts: IngredientCounts;
-  totalPrice: number;
-}
+const ContactData: FC<RouteComponentProps> = (props) => {
+  const burger = useSelector((state: RootState) => state.burger);
 
-const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);
   const [inputContact, setInputContact] = useState<InputContactWithConfigs>({
@@ -189,8 +187,8 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
         }
 
         const submittedOrder: PostOrder = {
-          ingredientCounts: props.ingredientCounts,
-          totalPrice: props.totalPrice,
+          ingredientCounts: burger.ingredientCounts,
+          totalPrice: burger.totalPrice,
           contact: submittedContact,
         };
         const response = await fireAxios.post<PostResponse>(
@@ -208,7 +206,7 @@ const ContactData: FC<ContactDataProps & RouteComponentProps> = (props) => {
         setIsLoading(false);
       }
     },
-    [inputContact, props]
+    [burger.ingredientCounts, burger.totalPrice, inputContact, props.history]
   );
 
   const changeInput = useCallback(

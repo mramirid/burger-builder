@@ -1,9 +1,9 @@
 import { FC, useCallback, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { IngredientType } from "../../components/Burger/types";
-import fireAxios from "../../axios/firebase/instance";
+import { IngredientType } from "../../shared/types/burger";
+import fireAxios from "../../axios/firebase";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
@@ -16,7 +16,8 @@ import {
   incrementIngredient,
 } from "../../store/burger/actions";
 
-const BurgerBuilder: FC<RouteComponentProps> = (props) => {
+const BurgerBuilder: FC = () => {
+  const history = useHistory();
   const dispatch = useAppDispatch();
   const burger = useSelector((state: RootState) => state.burger);
 
@@ -82,7 +83,7 @@ const BurgerBuilder: FC<RouteComponentProps> = (props) => {
       <OrderSummary
         ingredientCounts={burger.ingredientCounts}
         totalPrice={burger.totalPrice}
-        onOrdered={() => props.history.push("/checkout")}
+        onOrdered={() => history.push("/checkout")}
         onOrderCanceled={() => setIsPurchasing(false)}
       />
     );

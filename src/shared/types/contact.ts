@@ -1,7 +1,7 @@
 import { EventHandler, FormEvent } from "react";
 
-import { PostContact } from "../../../axios/firebase/types";
-import { InputConfig } from "../../../components/UI/Input/types";
+import { PostContact } from "./firebase";
+import { InputConfig } from "./input";
 
 export enum ContactFields {
   Name = "name",

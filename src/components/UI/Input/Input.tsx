@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import classes from "./Input.module.css";
-import { InputChangedHandler, InputConfig } from "./types";
+import { InputChangedHandler, InputConfig } from "../../../shared/types/input";
 
 interface InputProps extends InputConfig {
   onInputChanged: InputChangedHandler;

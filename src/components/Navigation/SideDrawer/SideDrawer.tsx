@@ -4,11 +4,11 @@ import Logo from "../../Logo/Logo";
 import classes from "./SideDrawer.module.css";
 import NavigationItems from "../NavigationItems/NavigationItems";
 import Backdrop from "../../UI/Backdrop/Backdrop";
-import { DivClickEvent } from "../../types";
+import { DivClickHandler } from "../../../shared/types/events";
 
 interface SideDrawerProps {
   isOpen: boolean;
-  onClosed: (event: DivClickEvent) => void;
+  onClosed: DivClickHandler;
 }
 
 const SideDrawer: FC<SideDrawerProps> = (props) => {

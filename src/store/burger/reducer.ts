@@ -2,7 +2,7 @@ import { createReducer } from "@reduxjs/toolkit";
 
 import { BurgerState } from "./types";
 import { incrementIngredient, decrementIngredient } from "./actions";
-import { INGREDIENT_PRICES } from "../../components/Burger/constants";
+import { INGREDIENT_PRICES } from "../../shared/constants/burger";
 
 /*
  * State

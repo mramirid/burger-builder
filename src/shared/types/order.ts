@@ -1,4 +1,4 @@
-import { PostOrder } from "../../axios/firebase/types";
+import { PostOrder } from "./firebase";
 
 export interface IOrder extends PostOrder {
   id: string;

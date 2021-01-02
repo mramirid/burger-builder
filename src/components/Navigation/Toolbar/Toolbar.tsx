@@ -4,10 +4,10 @@ import classes from "./Toolbar.module.css";
 import Logo from "../../Logo/Logo";
 import NavigationItems from "../NavigationItems/NavigationItems";
 import DrawerToggle from "../SideDrawer/DrawerToggle/DrawerToggle";
-import { DivClickEvent } from "../../types";
+import { DivClickHandler } from "../../../shared/types/events";
 
 interface ToolbarProps {
-  onDrawerToggleClicked: (event: DivClickEvent) => void;
+  onDrawerToggleClicked: DivClickHandler;
 }
 
 const Toolbar: FC<ToolbarProps> = (props) => (

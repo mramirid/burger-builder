@@ -5,25 +5,26 @@ import classes from "./ContactData.module.css";
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
-import fireAxios from "../../../axios/firebase/instance";
-import { RouteComponentProps } from "react-router-dom";
+import fireAxios from "../../../axios/firebase";
+import { useHistory } from "react-router-dom";
+import { RootState } from "../../../store";
 import {
   PostContact,
   PostOrder,
   PostResponse,
-} from "../../../axios/firebase/types";
+} from "../../../shared/types/firebase";
+import {
+  InputChangedEvent,
+  ValidationRules,
+} from "../../../shared/types/input";
 import {
   ContactFields,
   FormSubmitHandler,
   InputContactWithConfigs,
-} from "./types";
-import {
-  InputChangedEvent,
-  ValidationRules,
-} from "../../../components/UI/Input/types";
-import { RootState } from "../../../store";
+} from "../../../shared/types/contact";
 
-const ContactData: FC<RouteComponentProps> = (props) => {
+const ContactData: FC = () => {
+  const history = useHistory();
   const burger = useSelector((state: RootState) => state.burger);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -200,13 +201,13 @@ const ContactData: FC<RouteComponentProps> = (props) => {
         }
 
         setIsLoading(false);
-        props.history.replace("/");
+        history.replace("/");
       } catch (error) {
         console.log(error);
         setIsLoading(false);
       }
     },
-    [burger.ingredientCounts, burger.totalPrice, inputContact, props.history]
+    [burger.ingredientCounts, burger.totalPrice, history, inputContact]
   );
 
   const changeInput = useCallback(

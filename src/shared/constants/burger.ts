@@ -1,4 +1,4 @@
-import { IngredientType } from "./types";
+import { IngredientType } from "../types/burger";
 
 export const INGREDIENT_PRICES = {
   [IngredientType.BreadTop]: 2,

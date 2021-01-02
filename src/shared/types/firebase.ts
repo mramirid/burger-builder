@@ -1,12 +1,6 @@
-import {
-  IngredientCounts,
-  IngredientType,
-} from "../../components/Burger/types";
-import { ContactFields } from "../../containers/Checkout/ContactData/types";
+import { IngredientCounts, IngredientType } from "../types/burger";
+import { ContactFields } from "./contact";
 
-/*
- * Types for Firebase payload
- */
 export interface GetIngredientCounts {
   [IngredientType.Salad]: number;
   [IngredientType.Bacon]: number;

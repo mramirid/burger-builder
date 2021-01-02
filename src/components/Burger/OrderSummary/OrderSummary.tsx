@@ -1,14 +1,14 @@
 import { FC } from "react";
 
-import { IngredientCounts, IngredientType } from "../types";
 import Button from "../../UI/Button/Button";
-import { BtnClickEvent } from "../../types";
+import { IngredientCounts, IngredientType } from "../../../shared/types/burger";
+import { BtnClickHandler } from "../../../shared/types/events";
 
 interface OrderSummaryProps {
   ingredientCounts: IngredientCounts;
   totalPrice: number;
-  onOrdered: (event: BtnClickEvent) => void;
-  onOrderCanceled: (event: BtnClickEvent) => void;
+  onOrdered: BtnClickHandler;
+  onOrderCanceled: BtnClickHandler;
 }
 
 const OrderSummary: FC<OrderSummaryProps> = (props) => {

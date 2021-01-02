@@ -1,4 +1,4 @@
-import { IngredientCounts } from "../../components/Burger/types";
+import { IngredientCounts } from "../../shared/types/burger";
 
 /*
  * State Type

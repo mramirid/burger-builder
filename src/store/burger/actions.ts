@@ -1,5 +1,5 @@
 import { createAction } from "@reduxjs/toolkit";
-import { IngredientType } from "../../components/Burger/types";
+import { IngredientType } from "../../shared/types/burger";
 import { INCREMENT_INGREDIENT, DECREMENT_INGREDIENT } from "./types";
 
 /*

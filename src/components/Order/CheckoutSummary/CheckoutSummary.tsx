@@ -1,15 +1,15 @@
-import { EventHandler, FC } from "react";
+import { FC } from "react";
 
 import classes from "./CheckoutSummary.module.css";
-import { IngredientCounts } from "../../Burger/types";
 import Burger from "../../Burger/Burger";
 import Button from "../../UI/Button/Button";
-import { BtnClickEvent } from "../../types";
+import { IngredientCounts } from "../../../shared/types/burger";
+import { BtnClickHandler } from "../../../shared/types/events";
 
 interface CheckoutSummaryProps {
   ingredientCounts: IngredientCounts;
-  onCheckoutCanceled: EventHandler<BtnClickEvent>;
-  onCheckoutContinued: EventHandler<BtnClickEvent>;
+  onCheckoutCanceled: BtnClickHandler;
+  onCheckoutContinued: BtnClickHandler;
 }
 
 const CheckoutSummary: FC<CheckoutSummaryProps> = (props) => (

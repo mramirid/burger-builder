@@ -1,16 +1,17 @@
 import { FC } from "react";
 
 import classes from "./Backdrop.module.css";
-import { DivClickEvent } from "../../types";
+import { DivClickHandler } from "../../../shared/types/events";
 
 interface BackdropProps {
   isDisplayed: boolean;
-  onClicked: (event: DivClickEvent) => void;
+  onClicked: DivClickHandler;
 }
 
-const Backdrop: FC<BackdropProps> = (props) =>
-  props.isDisplayed ? (
+const Backdrop: FC<BackdropProps> = (props) => {
+  return props.isDisplayed ? (
     <div className={classes.Backdrop} onClick={props.onClicked} />
   ) : null;
+};
 
 export default Backdrop;

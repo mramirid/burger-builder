@@ -2,8 +2,8 @@ import { FC, useEffect, useState } from "react";
 
 import classes from "./BuildControls.module.css";
 import BuildControl from "./BuildControl/BuildControl";
-import { IngredientCounts, IngredientType } from "../types";
-import { BtnClickEvent } from "../../types";
+import { IngredientCounts, IngredientType } from "../../../shared/types/burger";
+import { BtnClickHandler } from "../../../shared/types/events";
 
 type Controls = {
   label: string;
@@ -17,7 +17,7 @@ interface BuildControlsProps {
   purchasable: boolean;
   addIngredient: (type: IngredientType) => void;
   removeIngredient: (type: IngredientType) => void;
-  onOrder: (event: BtnClickEvent) => void;
+  onOrder: BtnClickHandler;
 }
 
 const BuildControls: FC<BuildControlsProps> = (props) => {

@@ -1,12 +1,12 @@
 import { FC } from "react";
 
 import classes from "./Button.module.css";
-import { BtnClickEvent } from "../../types";
+import { BtnClickHandler } from "../../../shared/types/events";
 
 interface ButtonProps {
   btnType: "Danger" | "Success";
   disabled?: boolean;
-  onClicked?: (event: BtnClickEvent) => void;
+  onClicked?: BtnClickHandler;
 }
 
 const Button: FC<ButtonProps> = (props) => (

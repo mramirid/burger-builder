@@ -1,21 +1,21 @@
 import { FC, useCallback } from "react";
-import { Route, RouteComponentProps } from "react-router-dom";
+import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
 import { RootState } from "../../store";
 import ContactData from "./ContactData/ContactData";
 
-const Checkout: FC<RouteComponentProps> = (props) => {
+const Checkout: FC = () => {
+  const history = useHistory();
+  const routeMatch = useRouteMatch();
   const burger = useSelector((state: RootState) => state.burger);
 
   const continueCheckout = useCallback(() => {
-    props.history.replace("/checkout/contact-data");
-  }, [props.history]);
+    history.replace("/checkout/contact-data");
+  }, [history]);
 
-  const cancelCheckout = useCallback(() => {
-    props.history.goBack();
-  }, [props.history]);
+  const cancelCheckout = useCallback(() => history.goBack(), [history]);
 
   return (
     <>
@@ -24,10 +24,7 @@ const Checkout: FC<RouteComponentProps> = (props) => {
         onCheckoutCanceled={cancelCheckout}
         onCheckoutContinued={continueCheckout}
       />
-      <Route
-        path={`${props.match.path}/contact-data`}
-        component={ContactData}
-      />
+      <Route path={`${routeMatch.path}/contact-data`} component={ContactData} />
     </>
   );
 };

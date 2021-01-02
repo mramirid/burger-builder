@@ -11,10 +11,7 @@ import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 import { RootState, useAppDispatch } from "../../store";
-import {
-  decrementIngredient,
-  incrementIngredient,
-} from "../../store/burger/actions";
+import { decrementIngredient, incrementIngredient } from "../../store/burger";
 
 const BurgerBuilder: FC = () => {
   const history = useHistory();

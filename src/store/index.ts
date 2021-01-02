@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 
-import burgerReducer from "./burger/reducer";
+import burgerReducer from "./burger";
 
 const rootReducer = combineReducers({
   burger: burgerReducer,

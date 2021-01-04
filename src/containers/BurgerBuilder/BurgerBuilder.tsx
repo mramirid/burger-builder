@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,51 +10,35 @@ import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
-import { addIngredient, removeIngredient } from "../../store/burger";
-import { RootState, AppDispatch } from "../../store/types";
+import { RootState, AppDispatch } from "../../store";
+import {
+  addIngredient,
+  removeIngredient,
+  fetchIngredientCounts,
+} from "../../store/burger";
 
 const BurgerBuilder: FC = () => {
   const history = useHistory();
   const dispatch = useDispatch<AppDispatch>();
   const burger = useSelector((state: RootState) => state.burger);
 
+  const [isPurchasing, setIsPurchasing] = useState(false);
+
   const determinePurchasable = useCallback(() => {
-    const totalCounts = Object.keys(burger.ingredientCounts)
-      .map((key) => burger.ingredientCounts[key as IngredientType])
-      .reduce((sum, curCount) => sum + curCount, 0);
-    return totalCounts > 2;
+    let isPurchasable = false;
+    if (burger.ingredientCounts) {
+      const totalCounts = Object.keys(burger.ingredientCounts)
+        .map((key) => burger.ingredientCounts![key as IngredientType])
+        .reduce((sum, curCount) => sum + curCount, 0);
+      isPurchasable = totalCounts > 2;
+    }
+    return isPurchasable;
   }, [burger.ingredientCounts]);
 
-  const [isFetchIngreError] = useState(false);
-
-  // useEffect(() => {
-  //   fireAxios
-  //     .get<GetIngredientCounts>("/ingredients.json")
-  //     .then((response) => {
-  //       const loadedIngreCounts = {
-  //         breadTop: 1,
-  //         ...response.data,
-  //         breadBottom: 1,
-  //       };
-  //       const totalPrice = Object.keys(loadedIngreCounts)
-  //         .map((key) => {
-  //           const type = key as IngredientType;
-  //           return INGREDIENT_PRICES[type] * loadedIngreCounts[type];
-  //         })
-  //         .reduce((sum, curPrice) => sum + curPrice, 0);
-  //       setIngredientCounts(() => {
-  //         togglePurchasable(loadedIngreCounts);
-  //         return loadedIngreCounts;
-  //       });
-  //     })
-  //     .catch(() => setIsFetchIngreError(true));
-  // }, [togglePurchasable]);
-
-  const [isPurchasing, setIsPurchasing] = useState(false);
-  const [isLoading] = useState(false);
+  useEffect(() => dispatch(fetchIngredientCounts()), [dispatch]);
 
   let burgerBuilder: JSX.Element | null = null;
-  if (isFetchIngreError) {
+  if (burger.isFetchError) {
     burgerBuilder = (
       <p style={{ textAlign: "center" }}>Ingredients can't be loaded</p>
     );
@@ -75,7 +59,7 @@ const BurgerBuilder: FC = () => {
   }
 
   let modalChild: JSX.Element | null = null;
-  if (!isLoading && burger.ingredientCounts) {
+  if (burger.ingredientCounts) {
     modalChild = (
       <OrderSummary
         ingredientCounts={burger.ingredientCounts}
@@ -88,11 +72,7 @@ const BurgerBuilder: FC = () => {
   return (
     <>
       {burgerBuilder || <Spinner />}
-      <Modal
-        isDisplayed={isPurchasing}
-        isLoading={isLoading}
-        onClosed={() => setIsPurchasing(false)}
-      >
+      <Modal isDisplayed={isPurchasing} onClosed={() => setIsPurchasing(false)}>
         {modalChild || <Spinner />}
       </Modal>
     </>

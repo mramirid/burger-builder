@@ -188,7 +188,7 @@ const ContactData: FC = () => {
         }
 
         const submittedOrder: PostOrder = {
-          ingredientCounts: burger.ingredientCounts,
+          ingredientCounts: burger.ingredientCounts!,
           totalPrice: burger.totalPrice,
           contact: submittedContact,
         };

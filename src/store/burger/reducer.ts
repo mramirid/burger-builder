@@ -2,18 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { INGREDIENT_PRICES } from "../../shared/constants/burger";
 import { IngredientType } from "../../shared/types/burger";
+import { fetchIngredientCounts } from "./thunks";
 import { BurgerState } from "./types";
 
 const initialState: BurgerState = {
-  ingredientCounts: {
-    breadTop: 1,
-    bacon: 0,
-    cheese: 0,
-    meat: 0,
-    salad: 0,
-    breadBottom: 1,
-  },
-  totalPrice: 4.0,
+  ingredientCounts: null,
+  totalPrice: 0,
+  isFetchError: false,
 };
 
 const burgerSlice = createSlice({
@@ -21,13 +16,41 @@ const burgerSlice = createSlice({
   initialState,
   reducers: {
     addIngredient(state, action: PayloadAction<IngredientType>) {
-      state.ingredientCounts[action.payload]++;
-      state.totalPrice += INGREDIENT_PRICES[action.payload];
+      if (state.ingredientCounts) {
+        state.ingredientCounts[action.payload]++;
+        state.totalPrice += INGREDIENT_PRICES[action.payload];
+      }
     },
     removeIngredient(state, action: PayloadAction<IngredientType>) {
-      state.ingredientCounts[action.payload]--;
-      state.totalPrice -= INGREDIENT_PRICES[action.payload];
+      if (state.ingredientCounts) {
+        state.ingredientCounts[action.payload]--;
+        state.totalPrice -= INGREDIENT_PRICES[action.payload];
+      }
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchIngredientCounts.fulfilled, (state, action) => {
+        const loadedIngreCounts = {
+          breadTop: 1,
+          ...action.payload,
+          breadBottom: 1,
+        };
+
+        const totalPrice = Object.keys(loadedIngreCounts)
+          .map((key) => {
+            const type = key as IngredientType;
+            return INGREDIENT_PRICES[type] * loadedIngreCounts[type];
+          })
+          .reduce((sum, curPrice) => sum + curPrice, 0);
+
+        state.ingredientCounts = loadedIngreCounts;
+        state.totalPrice = totalPrice;
+        state.isFetchError = false;
+      })
+      .addCase(fetchIngredientCounts.rejected, (state) => {
+        state.isFetchError = true;
+      });
   },
 });
 

@@ -20,7 +20,7 @@ const Checkout: FC = () => {
   return (
     <>
       <CheckoutSummary
-        ingredientCounts={burger.ingredientCounts}
+        ingredientCounts={burger.ingredientCounts!}
         onCheckoutCanceled={cancelCheckout}
         onCheckoutContinued={continueCheckout}
       />

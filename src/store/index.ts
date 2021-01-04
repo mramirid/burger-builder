@@ -13,4 +13,5 @@ const store = configureStore({
   middleware: new MiddlewareArray().concat(thunk),
 });
 
+export * from "./types";
 export default store;

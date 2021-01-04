@@ -1,6 +1,6 @@
 import { FC, useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { IngredientType } from "../../shared/types/burger";
 import fireAxios from "../../axios/firebase";
@@ -10,12 +10,12 @@ import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
-import { RootState, useAppDispatch } from "../../store";
-import { decrementIngredient, incrementIngredient } from "../../store/burger";
+import { addIngredient, removeIngredient } from "../../store/burger";
+import { RootState, AppDispatch } from "../../store/types";
 
 const BurgerBuilder: FC = () => {
   const history = useHistory();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const burger = useSelector((state: RootState) => state.burger);
 
   const determinePurchasable = useCallback(() => {
@@ -66,8 +66,8 @@ const BurgerBuilder: FC = () => {
           ingredientCounts={burger.ingredientCounts}
           totalPrice={burger.totalPrice}
           purchasable={determinePurchasable()}
-          addIngredient={(type) => dispatch(incrementIngredient(type))}
-          removeIngredient={(type) => dispatch(decrementIngredient(type))}
+          addIngredient={(type) => dispatch(addIngredient(type))}
+          removeIngredient={(type) => dispatch(removeIngredient(type))}
           onOrder={() => setIsPurchasing(true)}
         />
       </>

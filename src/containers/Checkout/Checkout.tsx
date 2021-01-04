@@ -3,8 +3,8 @@ import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
-import { RootState } from "../../store";
 import ContactData from "./ContactData/ContactData";
+import { RootState } from "../../store/types";
 
 const Checkout: FC = () => {
   const history = useHistory();

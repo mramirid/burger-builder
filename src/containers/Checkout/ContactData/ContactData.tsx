@@ -7,7 +7,7 @@ import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
 import fireAxios from "../../../axios/firebase";
 import { useHistory } from "react-router-dom";
-import { RootState } from "../../../store";
+import { RootState } from "../../../store/types";
 import {
   PostContact,
   PostOrder,

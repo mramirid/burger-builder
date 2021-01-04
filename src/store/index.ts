@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import { configureStore } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
+import thunk from "redux-thunk";
+import { configureStore, MiddlewareArray } from "@reduxjs/toolkit";
 
-import burgerReducer from "./burger";
+import burgerReducer from "./burger/reducer";
 
 const rootReducer = combineReducers({
   burger: burgerReducer,
@@ -10,8 +10,7 @@ const rootReducer = combineReducers({
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: new MiddlewareArray().concat(thunk),
 });
 
-export type RootState = ReturnType<typeof store.getState>;
-export const useAppDispatch = () => useDispatch<typeof store.dispatch>();
 export default store;

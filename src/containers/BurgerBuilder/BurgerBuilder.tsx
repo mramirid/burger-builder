@@ -11,14 +11,31 @@ import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 import { RootState, AppDispatch } from "../../store";
-import { addIngredient, removeIngredient } from "../../store/burger/reducer";
+import {
+  addIngredient,
+  clearBurgerBuilder,
+  fetchIngredientCounts,
+  removeIngredient,
+} from "../../store/burger/reducer";
+import { setDidPurchase } from "../../store/orders/reducer";
 
 const BurgerBuilder: FC = () => {
   const history = useHistory();
   const dispatch = useDispatch<AppDispatch>();
   const burger = useSelector((state: RootState) => state.burger);
+  const orders = useSelector((state: RootState) => state.orders);
 
   const [isPurchasing, setIsPurchasing] = useState(false);
+
+  useEffect(() => {
+    if (!burger.ingredientCounts) {
+      dispatch(fetchIngredientCounts());
+    }
+    if (orders.didPurchase) {
+      dispatch(clearBurgerBuilder());
+      dispatch(setDidPurchase(false));
+    }
+  }, [burger.ingredientCounts, dispatch, orders.didPurchase]);
 
   const determinePurchasable = useCallback(() => {
     let isPurchasable = false;

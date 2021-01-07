@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import classes from "./ContactData.module.css";
@@ -18,8 +18,7 @@ import {
   FormSubmitHandler,
   InputContactWithConfigs,
 } from "../../../shared/types/contact";
-import { postOrder } from "../../../store/orders/reducer";
-import { clearBurgerBuilder } from "../../../store/burger/reducer";
+import { postOrder, setDidPurchase } from "../../../store/orders/reducer";
 import withErrorModal from "../../../hoc/withErrorModal/withErrorModal";
 
 const ContactData: FC = () => {
@@ -139,6 +138,14 @@ const ContactData: FC = () => {
     },
   });
 
+  useEffect(() => {
+    return () => {
+      if (isLoading) {
+        setLoading(false);
+      }
+    };
+  });
+
   const validate = useCallback((fieldValue: string, rules: ValidationRules) => {
     let isValid = true;
     let errorMessages: string[] = [];
@@ -191,14 +198,10 @@ const ContactData: FC = () => {
         contact: submittedContact,
       };
 
-      try {
-        setLoading(true);
-        await dispatch(postOrder(submittedOrder));
-        dispatch(clearBurgerBuilder());
-        history.replace("/");
-      } finally {
-        setLoading(false);
-      }
+      setLoading(true);
+      await dispatch(postOrder(submittedOrder));
+      dispatch(setDidPurchase(true));
+      history.replace("/");
     },
     [
       burger.ingredientCounts,

@@ -11,11 +11,7 @@ import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 import { RootState, AppDispatch } from "../../store";
-import {
-  addIngredient,
-  removeIngredient,
-  fetchIngredientCounts,
-} from "../../store/burger";
+import { addIngredient, removeIngredient } from "../../store/burger/reducer";
 
 const BurgerBuilder: FC = () => {
   const history = useHistory();
@@ -34,8 +30,6 @@ const BurgerBuilder: FC = () => {
     }
     return isPurchasable;
   }, [burger.ingredientCounts]);
-
-  useEffect(() => dispatch(fetchIngredientCounts()), [dispatch]);
 
   let burgerBuilder: JSX.Element | null = null;
   if (burger.isFetchError) {

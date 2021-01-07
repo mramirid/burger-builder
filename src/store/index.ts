@@ -1,16 +1,22 @@
 import { combineReducers } from "redux";
-import thunk from "redux-thunk";
-import { configureStore, MiddlewareArray } from "@reduxjs/toolkit";
+import reduxThunk from "redux-thunk";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 
 import burgerReducer from "./burger/reducer";
+import ordersReducer from "./orders/reducer";
 
 const rootReducer = combineReducers({
   burger: burgerReducer,
+  orders: ordersReducer,
 });
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: new MiddlewareArray().concat(thunk),
+  middleware: getDefaultMiddleware({
+    thunk: {
+      extraArgument: [reduxThunk],
+    },
+  }),
 });
 
 export * from "./types";

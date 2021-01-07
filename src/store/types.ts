@@ -6,7 +6,7 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>;
 export type AppDispatch = typeof store.dispatch;
 
-export interface HTTPThunkAPIConfig {
+export interface AppThunkAPIConfig {
   state: RootState;
   dispatch: AppDispatch;
   extra: unknown;

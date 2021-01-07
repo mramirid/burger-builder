@@ -1,5 +1,5 @@
 import { FC, useCallback, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import classes from "./ContactData.module.css";
 import Button from "../../../components/UI/Button/Button";
@@ -7,12 +7,8 @@ import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
 import fireAxios from "../../../axios/firebase";
 import { useHistory } from "react-router-dom";
-import { RootState } from "../../../store/types";
-import {
-  PostContact,
-  PostOrder,
-  PostResponse,
-} from "../../../shared/types/firebase";
+import { AppDispatch, RootState } from "../../../store";
+import { PostContact, PostOrder } from "../../../shared/types/firebase";
 import {
   InputChangedEvent,
   ValidationRules,
@@ -22,12 +18,16 @@ import {
   FormSubmitHandler,
   InputContactWithConfigs,
 } from "../../../shared/types/contact";
+import { postOrder } from "../../../store/orders/reducer";
+import { clearBurgerBuilder } from "../../../store/burger/reducer";
+import withErrorModal from "../../../hoc/withErrorModal/withErrorModal";
 
 const ContactData: FC = () => {
   const history = useHistory();
+  const dispatch = useDispatch<AppDispatch>();
   const burger = useSelector((state: RootState) => state.burger);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);
   const [inputContact, setInputContact] = useState<InputContactWithConfigs>({
     name: {
@@ -170,44 +170,43 @@ const ContactData: FC = () => {
 
   const order = useCallback<FormSubmitHandler>(
     async (event) => {
+      event.preventDefault();
+
+      const submittedContact: PostContact = {
+        name: "",
+        email: "",
+        street: "",
+        zipCode: "",
+        country: "",
+        deliveryMethod: "",
+      };
+      for (const key in inputContact) {
+        const fieldName = key as ContactFields;
+        submittedContact[fieldName] = inputContact[fieldName].value;
+      }
+
+      const submittedOrder: PostOrder = {
+        ingredientCounts: burger.ingredientCounts!,
+        totalPrice: burger.totalPrice,
+        contact: submittedContact,
+      };
+
       try {
-        event.preventDefault();
-        setIsLoading(true);
-
-        const submittedContact: PostContact = {
-          name: "",
-          email: "",
-          street: "",
-          zipCode: "",
-          country: "",
-          deliveryMethod: "",
-        };
-        for (const key in inputContact) {
-          const fieldName = key as ContactFields;
-          submittedContact[fieldName] = inputContact[fieldName].value;
-        }
-
-        const submittedOrder: PostOrder = {
-          ingredientCounts: burger.ingredientCounts!,
-          totalPrice: burger.totalPrice,
-          contact: submittedContact,
-        };
-        const response = await fireAxios.post<PostResponse>(
-          "/orders.json",
-          submittedOrder
-        );
-        if (response.status >= 400) {
-          throw new Error("Failed to POST order");
-        }
-
-        setIsLoading(false);
+        setLoading(true);
+        await dispatch(postOrder(submittedOrder));
+        dispatch(clearBurgerBuilder());
         history.replace("/");
-      } catch (error) {
-        console.log(error);
-        setIsLoading(false);
+      } finally {
+        setLoading(false);
       }
     },
-    [burger.ingredientCounts, burger.totalPrice, history, inputContact]
+    [
+      burger.ingredientCounts,
+      burger.totalPrice,
+      dispatch,
+      history,
+      inputContact,
+    ]
   );
 
   const changeInput = useCallback(
@@ -276,4 +275,4 @@ const ContactData: FC = () => {
   );
 };
 
-export default ContactData;
+export default withErrorModal(ContactData, fireAxios);

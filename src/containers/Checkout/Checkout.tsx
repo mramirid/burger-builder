@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
 import ContactData from "./ContactData/ContactData";
-import { RootState } from "../../store/types";
+import { RootState } from "../../store";
 
 const Checkout: FC = () => {
   const history = useHistory();

@@ -4,7 +4,7 @@ import Logo from "../../Logo/Logo";
 import classes from "./SideDrawer.module.css";
 import NavigationItems from "../NavigationItems/NavigationItems";
 import Backdrop from "../../UI/Backdrop/Backdrop";
-import { DivClickHandler } from "../../../shared/types/events";
+import { DivClickHandler } from "../../../shared/types/event-handlers";
 
 interface SideDrawerProps {
   isOpen: boolean;

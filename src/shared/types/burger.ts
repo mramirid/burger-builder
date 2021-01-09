@@ -15,3 +15,13 @@ export interface IngredientCounts {
   [IngredientType.Meat]: number;
   [IngredientType.BreadBottom]: number;
 }
+
+/*
+ * Firebase
+ */
+export interface FireGETIngreCounts {
+  [IngredientType.Salad]: number;
+  [IngredientType.Bacon]: number;
+  [IngredientType.Cheese]: number;
+  [IngredientType.Meat]: number;
+}

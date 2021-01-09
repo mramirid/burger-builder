@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import classes from "./Backdrop.module.css";
-import { DivClickHandler } from "../../../shared/types/events";
+import { DivClickHandler } from "../../../shared/types/event-handlers";
 
 interface BackdropProps {
   isDisplayed: boolean;

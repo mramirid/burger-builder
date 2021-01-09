@@ -2,11 +2,11 @@ import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Order from "../../components/Order/Order";
-import fireAxios from "../../axios/firebase";
+import { fireDBAxios } from "../../axios/firebase";
+import { AppDispatch, RootState } from "../../store";
+import { fetchOrders } from "../../store/reducers/orders";
 import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import { AppDispatch, RootState } from "../../store";
-import { fetchOrders } from "../../store/orders/reducer";
 
 const Orders: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -36,4 +36,4 @@ const Orders: FC = () => {
   );
 };
 
-export default withErrorModal(Orders, fireAxios);
+export default withErrorModal(Orders, fireDBAxios);

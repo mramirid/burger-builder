@@ -25,13 +25,19 @@ function withErrorModal<T>(
     };
 
     componentDidMount() {
-      const interceptorReqID = axios.interceptors.request.use((request) => {
-        this.setState({ error: null });
-        return request;
-      });
+      const interceptorReqID = axios.interceptors.request.use(
+        (request) => {
+          this.setState({ error: null });
+          return request;
+        },
+        (error) => error
+      );
       const interceptorResID = axios.interceptors.response.use(
         (response) => response,
-        (error) => this.setState({ error })
+        (error) => {
+          this.setState({ error });
+          return error;
+        }
       );
       this.setState({
         interceptorsIDs: {

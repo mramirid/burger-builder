@@ -1,24 +1,26 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import produce from "immer";
 
 import classes from "./ContactData.module.css";
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
-import fireAxios from "../../../axios/firebase";
-import { useHistory } from "react-router-dom";
+import { fireDBAxios } from "../../../axios/firebase";
 import { AppDispatch, RootState } from "../../../store";
-import { PostContact, PostOrder } from "../../../shared/types/firebase";
+import { FirePOSTOrder } from "../../../shared/types/order";
+import { validate } from "../../../shared/helpers/validation";
+import {
+  InputContactFields,
+  FirePOSTContact,
+  InputContactControls,
+} from "../../../shared/types/contact";
 import {
   InputChangedEvent,
-  ValidationRules,
-} from "../../../shared/types/input";
-import {
-  ContactFields,
   FormSubmitHandler,
-  InputContactWithConfigs,
-} from "../../../shared/types/contact";
-import { postOrder, setDidPurchase } from "../../../store/orders/reducer";
+} from "../../../shared/types/event-handlers";
+import { postOrder, setDidPurchase } from "../../../store/reducers/orders";
 import withErrorModal from "../../../hoc/withErrorModal/withErrorModal";
 
 const ContactData: FC = () => {
@@ -28,7 +30,7 @@ const ContactData: FC = () => {
 
   const [isLoading, setLoading] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);
-  const [inputContact, setInputContact] = useState<InputContactWithConfigs>({
+  const [inputContact, setInputContact] = useState<InputContactControls>({
     name: {
       value: "",
       label: "Name",
@@ -59,6 +61,7 @@ const ContactData: FC = () => {
         isValid: false,
         errorMessages: [],
         rules: {
+          isEmail: true,
           required: true,
         },
       },
@@ -113,6 +116,7 @@ const ContactData: FC = () => {
           required: true,
           minLength: 6,
           maxLength: 6,
+          isNumeric: true,
         },
       },
     },
@@ -138,48 +142,17 @@ const ContactData: FC = () => {
     },
   });
 
-  useEffect(() => {
-    return () => {
-      if (isLoading) {
-        setLoading(false);
-      }
-    };
+  useEffect(() => () => {
+    if (isLoading) {
+      setLoading(false);
+    }
   });
-
-  const validate = useCallback((fieldValue: string, rules: ValidationRules) => {
-    let isValid = true;
-    let errorMessages: string[] = [];
-
-    if (rules.required) {
-      const isNotEmpty = fieldValue.trim().length !== 0;
-      isValid = isNotEmpty && isValid;
-      if (!isNotEmpty) {
-        errorMessages.push("This field is required");
-      }
-    }
-    if (rules.minLength) {
-      const isMinLengthSatisfied = fieldValue.trim().length >= rules.minLength;
-      isValid = isMinLengthSatisfied && isValid;
-      if (!isMinLengthSatisfied) {
-        errorMessages.push("6 characters minimum");
-      }
-    }
-    if (rules.maxLength) {
-      const isMaxLengthSatisfied = fieldValue.trim().length <= rules.maxLength;
-      isValid = isMaxLengthSatisfied && isValid;
-      if (!isMaxLengthSatisfied) {
-        errorMessages.push("6 character maximum");
-      }
-    }
-
-    return { isValid, errorMessages };
-  }, []);
 
   const order = useCallback<FormSubmitHandler>(
     async (event) => {
       event.preventDefault();
 
-      const submittedContact: PostContact = {
+      const submittedContact: FirePOSTContact = {
         name: "",
         email: "",
         street: "",
@@ -188,11 +161,11 @@ const ContactData: FC = () => {
         deliveryMethod: "",
       };
       for (const key in inputContact) {
-        const fieldName = key as ContactFields;
+        const fieldName = key as InputContactFields;
         submittedContact[fieldName] = inputContact[fieldName].value;
       }
 
-      const submittedOrder: PostOrder = {
+      const submittedOrder: FirePOSTOrder = {
         ingredientCounts: burger.ingredientCounts!,
         totalPrice: burger.totalPrice,
         contact: submittedContact,
@@ -214,37 +187,33 @@ const ContactData: FC = () => {
 
   const changeInput = useCallback(
     (event: InputChangedEvent, fieldName: string) => {
-      setInputContact((inputContact) => {
-        const updatedInputContact = { ...inputContact };
-        const updatedInputField = { ...updatedInputContact[fieldName] };
+      setInputContact((inputContact) =>
+        produce(inputContact, (inputContactDraft) => {
+          const inputField = inputContactDraft[fieldName];
+          inputField.value = event.target.value;
+          if (inputField.validation) {
+            const { isValid, errorMessages } = validate(
+              event.target.value,
+              inputField.validation.rules
+            );
+            inputField.validation.touched = true;
+            inputField.validation.isValid = isValid;
+            inputField.validation.errorMessages = errorMessages;
+          }
+          inputContactDraft[fieldName] = inputField;
 
-        updatedInputField.value = event.target.value;
-        if (updatedInputField.validation) {
-          const { isValid, errorMessages } = validate(
-            event.target.value,
-            updatedInputField.validation.rules
-          );
-          updatedInputField.validation.touched = true;
-          updatedInputField.validation.isValid = isValid;
-          updatedInputField.validation.errorMessages = errorMessages;
-        }
-        updatedInputContact[fieldName] = updatedInputField;
-
-        setFormIsValid(() => {
           let formIsValid = true;
-          for (const fieldName in updatedInputContact) {
-            const fieldValidation = updatedInputContact[fieldName].validation;
-            if (fieldValidation) {
-              formIsValid = fieldValidation.isValid && formIsValid;
+          for (const fieldName in inputContactDraft) {
+            if (inputContactDraft[fieldName].validation) {
+              formIsValid =
+                inputContactDraft[fieldName].validation!.isValid && formIsValid;
             }
           }
-          return formIsValid;
-        });
-
-        return updatedInputContact;
-      });
+          setFormIsValid(formIsValid);
+        })
+      );
     },
-    [validate]
+    []
   );
 
   let form: JSX.Element | null = null;
@@ -278,4 +247,4 @@ const ContactData: FC = () => {
   );
 };
 
-export default withErrorModal(ContactData, fireAxios);
+export default withErrorModal(ContactData, fireDBAxios);

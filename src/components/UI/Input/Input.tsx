@@ -1,9 +1,10 @@
 import { FC } from "react";
 
 import classes from "./Input.module.css";
-import { InputChangedHandler, InputConfig } from "../../../shared/types/input";
+import { InputControl } from "../../../shared/types/input";
+import { InputChangedHandler } from "../../../shared/types/event-handlers";
 
-interface InputProps extends InputConfig {
+interface InputProps extends InputControl {
   onInputChanged: InputChangedHandler;
 }
 

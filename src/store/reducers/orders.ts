@@ -1,43 +1,51 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import fireAxios from "../../axios/firebase";
-import {
-  GetOrders,
-  PostOrder,
-  PostResponse,
-} from "../../shared/types/firebase";
-import { IOrder } from "../../shared/types/order";
+import { fireDBAxios } from "../../axios/firebase";
+import { FirePOSTResBody } from "../../shared/types/firebase";
+import { IOrder, FirePOSTOrder, FireGETOrders } from "../../shared/types/order";
 import { AppThunkAPIConfig } from "../types";
-import { OrdersState } from "./types";
 
-export const postOrder = createAsyncThunk<IOrder, PostOrder, AppThunkAPIConfig>(
-  "orders/postOrder",
-  async (submittedOrder, thunkAPI) => {
-    try {
-      const response = await fireAxios.post<PostResponse>(
-        "/orders.json",
-        submittedOrder
-      );
-      if (response.status >= 400) {
-        const error = new Error("Failed to POST order");
-        return thunkAPI.rejectWithValue(error);
-      }
-      return {
-        id: response.data.name,
-        ...submittedOrder,
-      };
-    } catch (error) {
+interface OrdersState {
+  orders: IOrder[];
+  isFetchError: boolean;
+  didPurchase: boolean;
+}
+
+const initialState: OrdersState = {
+  orders: [],
+  isFetchError: false,
+  didPurchase: false,
+};
+
+export const postOrder = createAsyncThunk<
+  IOrder,
+  FirePOSTOrder,
+  AppThunkAPIConfig
+>("orders/postOrder", async (submittedOrder, thunkAPI) => {
+  try {
+    const response = await fireDBAxios.post<FirePOSTResBody>(
+      "/orders.json",
+      submittedOrder
+    );
+    if (response.status >= 400) {
+      const error = new Error("Failed to POST order");
       return thunkAPI.rejectWithValue(error);
     }
+    return {
+      id: response.data.name,
+      ...submittedOrder,
+    };
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
   }
-);
+});
 
 export const fetchOrders = createAsyncThunk<IOrder[], void, AppThunkAPIConfig>(
   "orders/fetchOrders",
   async (_, thunkAPI) => {
     try {
-      const response = await fireAxios.get<GetOrders>("/orders.json");
+      const response = await fireDBAxios.get<FireGETOrders>("/orders.json");
       if (response.status >= 400) {
         const error = new Error("Failed to fetch orders");
         return thunkAPI.rejectWithValue(error);
@@ -55,12 +63,6 @@ export const fetchOrders = createAsyncThunk<IOrder[], void, AppThunkAPIConfig>(
     }
   }
 );
-
-const initialState: OrdersState = {
-  orders: [],
-  isFetchError: false,
-  didPurchase: false,
-};
 
 const ordersSlice = createSlice({
   name: "orders",

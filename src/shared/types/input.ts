@@ -1,16 +1,16 @@
-import { ChangeEvent, EventHandler } from "react";
-
 type InputFieldTag = "input" | "textarea" | "select";
 
 type InputFieldType = "text" | "email" | "password" | "number";
 
 export interface ValidationRules {
   required?: boolean;
+  isEmail?: boolean;
   minLength?: number;
   maxLength?: number;
+  isNumeric?: boolean;
 }
 
-export interface InputConfig<O = string> {
+export interface InputControl<O = string> {
   label: string;
   value: string;
   tag: InputFieldTag;
@@ -29,9 +29,3 @@ export interface InputConfig<O = string> {
     rules: ValidationRules;
   };
 }
-
-export type InputChangedEvent = ChangeEvent<
-  HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
->;
-
-export type InputChangedHandler = EventHandler<InputChangedEvent>;

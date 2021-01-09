@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from "react";
 import classes from "./BuildControls.module.css";
 import BuildControl from "./BuildControl/BuildControl";
 import { IngredientCounts, IngredientType } from "../../../shared/types/burger";
-import { BtnClickHandler } from "../../../shared/types/events";
+import { BtnClickHandler } from "../../../shared/types/event-handlers";
 
 type Controls = {
   label: string;

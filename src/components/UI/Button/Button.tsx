@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import classes from "./Button.module.css";
-import { BtnClickHandler } from "../../../shared/types/events";
+import { BtnClickHandler } from "../../../shared/types/event-handlers";
 
 interface ButtonProps {
   btnType: "Danger" | "Success";

@@ -1,9 +1,6 @@
-import { EventHandler, FormEvent } from "react";
+import { InputControl } from "./input";
 
-import { PostContact } from "./firebase";
-import { InputConfig } from "./input";
-
-export enum ContactFields {
+export enum InputContactFields {
   Name = "name",
   Email = "email",
   Street = "street",
@@ -12,20 +9,28 @@ export enum ContactFields {
   DeliveryMethod = "deliveryMethod",
 }
 
-export interface Contact extends PostContact {
+type DeliveryMethod = "" | "cheapest" | "fastest";
+
+export interface InputContactControls {
+  [InputContactFields.Name]: InputControl;
+  [InputContactFields.Email]: InputControl;
+  [InputContactFields.Street]: InputControl;
+  [InputContactFields.Country]: InputControl;
+  [InputContactFields.ZipCode]: InputControl;
+  [InputContactFields.DeliveryMethod]: InputControl<DeliveryMethod>;
+
+  [x: string]: InputControl | InputControl<DeliveryMethod>;
+}
+
+export interface FirePOSTContact {
+  [InputContactFields.Name]: string;
+  [InputContactFields.Email]: string;
+  [InputContactFields.Street]: string;
+  [InputContactFields.Country]: string;
+  [InputContactFields.ZipCode]: string;
+  [InputContactFields.DeliveryMethod]: string;
+}
+
+export interface Contact extends FirePOSTContact {
   id: string;
 }
-
-export type DeliveryMethod = "" | "cheapest" | "fastest";
-
-export interface InputContactWithConfigs {
-  [ContactFields.Name]: InputConfig;
-  [ContactFields.Email]: InputConfig;
-  [ContactFields.Street]: InputConfig;
-  [ContactFields.Country]: InputConfig;
-  [ContactFields.ZipCode]: InputConfig;
-  [ContactFields.DeliveryMethod]: InputConfig<DeliveryMethod>;
-  [x: string]: InputConfig | InputConfig<DeliveryMethod>;
-}
-
-export type FormSubmitHandler = EventHandler<FormEvent<HTMLFormElement>>;

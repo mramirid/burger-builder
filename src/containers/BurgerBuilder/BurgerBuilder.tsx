@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { IngredientType } from "../../shared/types/burger";
-import fireAxios from "../../axios/firebase";
+import { fireDBAxios } from "../../axios/firebase";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
@@ -16,8 +16,8 @@ import {
   clearBurgerBuilder,
   fetchIngredientCounts,
   removeIngredient,
-} from "../../store/burger/reducer";
-import { setDidPurchase } from "../../store/orders/reducer";
+} from "../../store/reducers/burger";
+import { setDidPurchase } from "../../store/reducers/orders";
 
 const BurgerBuilder: FC = () => {
   const history = useHistory();
@@ -90,4 +90,4 @@ const BurgerBuilder: FC = () => {
   );
 };
 
-export default withErrorModal(BurgerBuilder, fireAxios);
+export default withErrorModal(BurgerBuilder, fireDBAxios);

@@ -11,7 +11,6 @@ import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 import { RootState, AppDispatch } from "../../store";
 import {
   addIngredient,
@@ -20,6 +19,7 @@ import {
   removeIngredient,
 } from "../../store/reducers/burger";
 import { setDidPurchase } from "../../store/reducers/orders";
+import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 
 const MySwal = withReactContent(Swal);
 
@@ -28,6 +28,7 @@ const BurgerBuilder: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const burger = useSelector((state: RootState) => state.burger);
   const orders = useSelector((state: RootState) => state.orders);
+  const auth = useSelector((state: RootState) => state.auth);
 
   const [isPurchasing, setIsPurchasing] = useState(false);
 
@@ -65,6 +66,7 @@ const BurgerBuilder: FC = () => {
         <BuildControls
           ingredientCounts={burger.ingredientCounts}
           totalPrice={burger.totalPrice}
+          isAuthenticated={!!auth.token}
           purchasable={determinePurchasable()}
           addIngredient={(type) => dispatch(addIngredient(type))}
           removeIngredient={(type) => dispatch(removeIngredient(type))}

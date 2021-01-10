@@ -12,6 +12,7 @@ type Controls = {
 }[];
 
 interface BuildControlsProps {
+  isAuthenticated: boolean;
   ingredientCounts: IngredientCounts;
   totalPrice: number;
   purchasable: boolean;
@@ -69,10 +70,10 @@ const BuildControls: FC<BuildControlsProps> = (props) => {
       ))}
       <button
         className={classes.OrderButton}
-        disabled={!props.purchasable}
+        disabled={!props.purchasable || !props.isAuthenticated}
         onClick={props.onOrder}
       >
-        ORDER NOW
+        {props.isAuthenticated ? "ORDER NOW" : "SIGN IN TO ORDER"}
       </button>
     </div>
   );

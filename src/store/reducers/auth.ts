@@ -99,7 +99,7 @@ export const signIn = createAsyncThunk<
       });
     }
 
-    // const tokenExpirationDuration = 5000 --> for testing auto logout;
+    // const tokenExpirationDuration = 5000; --> for testing auto logout
     const tokenExpirationDuration = +response.data.expiresIn * 1000;
     const tokenExpirationDate = new Date().getTime() + tokenExpirationDuration;
 

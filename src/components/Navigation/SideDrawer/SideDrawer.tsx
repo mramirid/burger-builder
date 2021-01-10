@@ -7,6 +7,7 @@ import Backdrop from "../../UI/Backdrop/Backdrop";
 import { DivClickHandler } from "../../../shared/types/event-handlers";
 
 interface SideDrawerProps {
+  isAuthenticated: boolean;
   isOpen: boolean;
   onClosed: DivClickHandler;
 }
@@ -25,7 +26,7 @@ const SideDrawer: FC<SideDrawerProps> = (props) => {
         <div className={classes.Logo}>
           <Logo />
         </div>
-        <NavigationItems />
+        <NavigationItems isAuthenticated={props.isAuthenticated} />
       </div>
       <Backdrop isDisplayed={props.isOpen} onClicked={props.onClosed} />
     </>

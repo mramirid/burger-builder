@@ -7,6 +7,7 @@ import DrawerToggle from "../SideDrawer/DrawerToggle/DrawerToggle";
 import { DivClickHandler } from "../../../shared/types/event-handlers";
 
 interface ToolbarProps {
+  isAuthenticated: boolean;
   onDrawerToggleClicked: DivClickHandler;
 }
 
@@ -17,7 +18,7 @@ const Toolbar: FC<ToolbarProps> = (props) => (
       <Logo />
     </div>
     <div className={classes.DesktopOnly}>
-      <NavigationItems />
+      <NavigationItems isAuthenticated={props.isAuthenticated} />
     </div>
   </header>
 );

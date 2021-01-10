@@ -1,13 +1,15 @@
-import { FC, useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FC, useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { unwrapResult } from "@reduxjs/toolkit";
 import produce from "immer";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 import classes from "./ContactData.module.css";
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
-import { fireDBAxios } from "../../../axios/firebase";
 import { AppDispatch, RootState } from "../../../store";
 import { FirePOSTOrder } from "../../../shared/types/order";
 import { validate } from "../../../shared/helpers/validation";
@@ -21,7 +23,9 @@ import {
   FormSubmitHandler,
 } from "../../../shared/types/event-handlers";
 import { postOrder, setDidPurchase } from "../../../store/reducers/orders";
-import withErrorModal from "../../../hoc/withErrorModal/withErrorModal";
+import { HttpError } from "../../../shared/types/errors";
+
+const MySwal = withReactContent(Swal);
 
 const ContactData: FC = () => {
   const history = useHistory();
@@ -142,12 +146,6 @@ const ContactData: FC = () => {
     },
   });
 
-  useEffect(() => () => {
-    if (isLoading) {
-      setLoading(false);
-    }
-  });
-
   const order = useCallback<FormSubmitHandler>(
     async (event) => {
       event.preventDefault();
@@ -172,9 +170,16 @@ const ContactData: FC = () => {
       };
 
       setLoading(true);
-      await dispatch(postOrder(submittedOrder));
-      dispatch(setDidPurchase(true));
-      history.replace("/");
+      dispatch(postOrder(submittedOrder))
+        .then(unwrapResult)
+        .then(() => {
+          dispatch(setDidPurchase(true));
+          history.replace("/");
+        })
+        .catch((error: HttpError) => {
+          MySwal.fire(error.statusCode.toString(), error.message, "error");
+          setLoading(false);
+        });
     },
     [
       burger.ingredientCounts,
@@ -247,4 +252,4 @@ const ContactData: FC = () => {
   );
 };
 
-export default withErrorModal(ContactData, fireDBAxios);
+export default ContactData;

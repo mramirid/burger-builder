@@ -25,19 +25,24 @@ export const postOrder = createAsyncThunk<
 >("orders/postOrder", async (submittedOrder, thunkAPI) => {
   try {
     const response = await fireDBAxios.post<FirePOSTResBody>(
-      "/orders.json",
+      `/orders.json?auth=${thunkAPI.getState().auth.token}`,
       submittedOrder
     );
     if (response.status >= 400) {
-      const error = new Error("Failed to POST order");
-      return thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue({
+        statusCode: response.status,
+        message: "Failed to add order",
+      });
     }
     return {
       id: response.data.name,
       ...submittedOrder,
     };
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+  } catch (axiosErr) {
+    return thunkAPI.rejectWithValue({
+      statusCode: axiosErr.response.status,
+      message: axiosErr.response.data.error || "An error occurred",
+    });
   }
 });
 
@@ -45,10 +50,14 @@ export const fetchOrders = createAsyncThunk<IOrder[], void, AppThunkAPIConfig>(
   "orders/fetchOrders",
   async (_, thunkAPI) => {
     try {
-      const response = await fireDBAxios.get<FireGETOrders>("/orders.json");
+      const response = await fireDBAxios.get<FireGETOrders>(
+        `/orders.json?auth=${thunkAPI.getState().auth.token}`
+      );
       if (response.status >= 400) {
-        const error = new Error("Failed to fetch orders");
-        return thunkAPI.rejectWithValue(error);
+        return thunkAPI.rejectWithValue({
+          statusCode: response.status,
+          message: "Failed to fetch orders",
+        });
       }
       const fetchedOrders: IOrder[] = [];
       for (const orderId in response.data) {
@@ -58,8 +67,11 @@ export const fetchOrders = createAsyncThunk<IOrder[], void, AppThunkAPIConfig>(
         });
       }
       return fetchedOrders;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+    } catch (axiosErr) {
+      return thunkAPI.rejectWithValue({
+        statusCode: axiosErr.response.status,
+        message: axiosErr.response.data.error || "An error occurred",
+      });
     }
   }
 );

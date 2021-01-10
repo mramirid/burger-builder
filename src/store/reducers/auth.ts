@@ -37,7 +37,10 @@ export const signUp = createAsyncThunk<
       } as FireInputAuthReqBody
     );
     if (response.status >= 400) {
-      return thunkAPI.rejectWithValue("Failed to sign up");
+      return thunkAPI.rejectWithValue({
+        statusCode: response.status,
+        message: "Failed to sign up",
+      });
     }
 
     const tokenExpirationDuration = +response.data.expiresIn * 1000;
@@ -59,16 +62,19 @@ export const signUp = createAsyncThunk<
       token: response.data.idToken,
       authTimerId,
     };
-  } catch (error) {
+  } catch (axiosErr) {
     let errorMessage: string;
-    switch (error.response.data.error.message) {
+    switch (axiosErr.response.data.error.message) {
       case "EMAIL_EXISTS":
         errorMessage = "The email is already in use by another account";
         break;
       default:
-        errorMessage = error.message || "An error occurred";
+        errorMessage = "An Error Occurred";
     }
-    return thunkAPI.rejectWithValue(errorMessage);
+    return thunkAPI.rejectWithValue({
+      statusCode: axiosErr.response.data.error.code || 400,
+      message: errorMessage,
+    });
   }
 });
 
@@ -87,11 +93,14 @@ export const signIn = createAsyncThunk<
       } as FireInputAuthReqBody
     );
     if (response.status >= 400) {
-      return thunkAPI.rejectWithValue("Failed to sign up");
+      return thunkAPI.rejectWithValue({
+        statusCode: response.status,
+        message: "Failed to sign in",
+      });
     }
 
-    const tokenExpirationDuration = 5000;
-    // const tokenExpirationDuration = +response.data.expiresIn * 1000;
+    // const tokenExpirationDuration = 5000 --> for testing auto logout;
+    const tokenExpirationDuration = +response.data.expiresIn * 1000;
     const tokenExpirationDate = new Date().getTime() + tokenExpirationDuration;
 
     authLocalStorage.saveUserAuth({
@@ -110,9 +119,9 @@ export const signIn = createAsyncThunk<
       token: response.data.idToken,
       authTimerId,
     };
-  } catch (error) {
+  } catch (axiosErr) {
     let errorMessage: string;
-    switch (error.response.data.error.message) {
+    switch (axiosErr.response.data.error.message) {
       case "EMAIL_NOT_FOUND":
         errorMessage = "There is no user registered with that email address";
         break;
@@ -123,9 +132,12 @@ export const signIn = createAsyncThunk<
         errorMessage = "The user account has been disabled by an administrator";
         break;
       default:
-        errorMessage = error.message || "An error occurred";
+        errorMessage = "An Error Occurred";
     }
-    return thunkAPI.rejectWithValue(errorMessage);
+    return thunkAPI.rejectWithValue({
+      statusCode: axiosErr.response.data.error.code || 400,
+      message: errorMessage,
+    });
   }
 });
 
@@ -135,7 +147,7 @@ const authSlice = createSlice({
   reducers: {
     setUserAuth(state, action: PayloadAction<AuthState>) {
       state.userId = action.payload.userId;
-      state.userId = action.payload.token;
+      state.token = action.payload.token;
       state.authTimerId = action.payload.authTimerId;
     },
     logout(state) {

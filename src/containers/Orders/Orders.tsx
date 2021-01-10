@@ -1,12 +1,16 @@
 import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 import Order from "../../components/Order/Order";
-import { fireDBAxios } from "../../axios/firebase";
 import { AppDispatch, RootState } from "../../store";
 import { fetchOrders } from "../../store/reducers/orders";
-import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { HttpError } from "../../shared/types/errors";
+
+const MySwal = withReactContent(Swal);
 
 const Orders: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,7 +22,10 @@ const Orders: FC = () => {
     if (ordersReducer.orders.length === 0) {
       setIsLoading(true);
       dispatch(fetchOrders())
-        .catch((error) => console.error(error.message))
+        .then(unwrapResult)
+        .catch((error: HttpError) => {
+          MySwal.fire(error.statusCode.toString(), error.message, "error");
+        })
         .finally(() => setIsLoading(false));
     }
   }, [dispatch, ordersReducer.orders.length]);
@@ -36,4 +43,4 @@ const Orders: FC = () => {
   );
 };
 
-export default withErrorModal(Orders, fireDBAxios);
+export default Orders;

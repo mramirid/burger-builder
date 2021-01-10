@@ -18,6 +18,7 @@ import { validate } from "../../shared/helpers/validation";
 import { signIn, signUp } from "../../store/reducers/auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
+import { HttpError } from "../../shared/types/errors";
 
 const MySwal = withReactContent(Swal);
 
@@ -112,16 +113,24 @@ const Auth: FC = () => {
         dispatch(signUp(inputAuthPayload))
           .then(unwrapResult)
           .then((_result) => history.replace("/"))
-          .catch((rejectedValue) => {
-            MySwal.fire("An Error Occurred", rejectedValue, "error");
+          .catch((rejectedValue: HttpError) => {
+            MySwal.fire(
+              rejectedValue.statusCode.toString(),
+              rejectedValue.message,
+              "error"
+            );
             setLoading(false);
           });
       } else {
         dispatch(signIn(inputAuthPayload))
           .then(unwrapResult)
           .then((_result) => history.replace("/"))
-          .catch((rejectedValue) => {
-            MySwal.fire("An Error Occurred", rejectedValue, "error");
+          .catch((rejectedValue: HttpError) => {
+            MySwal.fire(
+              rejectedValue.statusCode.toString(),
+              rejectedValue.message,
+              "error"
+            );
             setLoading(false);
           });
       }
@@ -159,11 +168,11 @@ const Auth: FC = () => {
   return (
     <div className={classes.Auth}>
       <h4>
-        Enter your email and password to {isSignUp ? "Sign In" : "Sign Up"}
+        Enter your email and password to {isSignUp ? "Sign Up" : "Sign In"}
       </h4>
       {form || <Spinner />}
       <Button btnType="Danger" onClicked={() => setIsSignUp(!isSignUp)}>
-        {isSignUp ? "SIGN IN" : "SIGN UP"}
+        SWITCH TO {isSignUp ? "SIGN IN" : "SIGN UP"}
       </Button>
     </div>
   );

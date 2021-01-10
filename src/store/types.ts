@@ -1,6 +1,7 @@
 import { Action, SerializedError, ThunkAction } from "@reduxjs/toolkit";
 
 import store from ".";
+import { HttpError } from "../shared/types/errors";
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>;
@@ -10,6 +11,6 @@ export interface AppThunkAPIConfig {
   state: RootState;
   dispatch: AppDispatch;
   extra: unknown;
-  rejectValue: unknown;
+  rejectValue: HttpError;
   serializedErrorType: SerializedError;
 }

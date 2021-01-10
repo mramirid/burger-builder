@@ -1,6 +1,8 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 import { IngredientType } from "../../shared/types/burger";
 import { fireDBAxios } from "../../axios/firebase";
@@ -19,6 +21,8 @@ import {
 } from "../../store/reducers/burger";
 import { setDidPurchase } from "../../store/reducers/orders";
 
+const MySwal = withReactContent(Swal);
+
 const BurgerBuilder: FC = () => {
   const history = useHistory();
   const dispatch = useDispatch<AppDispatch>();
@@ -34,6 +38,7 @@ const BurgerBuilder: FC = () => {
     if (orders.didPurchase) {
       dispatch(clearBurgerBuilder());
       dispatch(setDidPurchase(false));
+      MySwal.fire("Success", "Order Success", "success");
     }
   }, [burger.ingredientCounts, dispatch, orders.didPurchase]);
 

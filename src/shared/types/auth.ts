@@ -22,22 +22,22 @@ export interface FireInputAuthReqBody {
   returnSecureToken: boolean;
 }
 
-export interface FireSigninResBody {
-  displayName: string;
+export interface FireAuthResBody {
   idToken: string;
-  email: string;
-  refreshToken: string;
   expiresIn: string;
   localId: string;
+}
+
+export interface FireSigninResBody extends FireAuthResBody {
+  displayName: string;
+  email: string;
+  refreshToken: string;
   kind: string;
   registered: boolean;
 }
 
-export interface FireSignupResBody {
-  idToken: string;
+export interface FireSignupResBody extends FireAuthResBody {
   email: string;
   refreshToken: string;
-  expiresIn: string;
-  localId: string;
   kind: string;
 }

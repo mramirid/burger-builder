@@ -1,5 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { AppThunkAPIConfig } from "../types";
 import { fireAuthAxios } from "../../axios/firebase";
@@ -9,21 +8,22 @@ import {
   FireSigninResBody,
   FireSignupResBody,
 } from "../../shared/types/auth";
+import * as authLocalStorage from "../../shared/helpers/auth-local-storage";
 
-interface UserAuth {
+interface AuthState {
   userId: string | null;
   token: string | null;
+  authTimerId: number;
 }
-
-interface AuthState extends UserAuth {}
 
 const initialState: AuthState = {
   userId: null,
   token: null,
+  authTimerId: -1,
 };
 
 export const signUp = createAsyncThunk<
-  UserAuth,
+  AuthState,
   InputAuthPayload,
   AppThunkAPIConfig
 >("auth/signUp", async (payload, thunkAPI) => {
@@ -39,9 +39,25 @@ export const signUp = createAsyncThunk<
     if (response.status >= 400) {
       return thunkAPI.rejectWithValue("Failed to sign up");
     }
+
+    const tokenExpirationDuration = +response.data.expiresIn * 1000;
+    const tokenExpirationDate = new Date().getTime() + tokenExpirationDuration;
+
+    authLocalStorage.saveUserAuth({
+      userId: response.data.localId,
+      token: response.data.idToken,
+      tokenExpirationDate: tokenExpirationDate,
+    });
+
+    const authTimerId = window.setTimeout(
+      () => thunkAPI.dispatch(authSlice.actions.logout()),
+      tokenExpirationDuration
+    );
+
     return {
       userId: response.data.localId,
       token: response.data.idToken,
+      authTimerId,
     };
   } catch (error) {
     let errorMessage: string;
@@ -57,7 +73,7 @@ export const signUp = createAsyncThunk<
 });
 
 export const signIn = createAsyncThunk<
-  UserAuth,
+  AuthState,
   InputAuthPayload,
   AppThunkAPIConfig
 >("auth/signIn", async (payload, thunkAPI) => {
@@ -73,9 +89,26 @@ export const signIn = createAsyncThunk<
     if (response.status >= 400) {
       return thunkAPI.rejectWithValue("Failed to sign up");
     }
+
+    const tokenExpirationDuration = 5000;
+    // const tokenExpirationDuration = +response.data.expiresIn * 1000;
+    const tokenExpirationDate = new Date().getTime() + tokenExpirationDuration;
+
+    authLocalStorage.saveUserAuth({
+      userId: response.data.localId,
+      token: response.data.idToken,
+      tokenExpirationDate: tokenExpirationDate,
+    });
+
+    const authTimerId = window.setTimeout(
+      () => thunkAPI.dispatch(authSlice.actions.logout()),
+      tokenExpirationDuration
+    );
+
     return {
       userId: response.data.localId,
       token: response.data.idToken,
+      authTimerId,
     };
   } catch (error) {
     let errorMessage: string;
@@ -99,18 +132,35 @@ export const signIn = createAsyncThunk<
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    setUserAuth(state, action: PayloadAction<AuthState>) {
+      state.userId = action.payload.userId;
+      state.userId = action.payload.token;
+      state.authTimerId = action.payload.authTimerId;
+    },
+    logout(state) {
+      authLocalStorage.clearUserAuth();
+      clearTimeout(state.authTimerId);
+      state.token = null;
+      state.userId = null;
+      state.authTimerId = -1;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(signUp.fulfilled, (state, action) => {
         state.userId = action.payload.userId;
         state.token = action.payload.token;
+        state.authTimerId = action.payload.authTimerId;
       })
       .addCase(signIn.fulfilled, (state, action) => {
         state.userId = action.payload.userId;
         state.token = action.payload.token;
+        state.authTimerId = action.payload.authTimerId;
       });
   },
 });
+
+export const { setUserAuth, logout } = authSlice.actions;
 
 export default authSlice.reducer;

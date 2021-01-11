@@ -16,9 +16,6 @@ export interface IngredientCounts {
   [IngredientType.BreadBottom]: number;
 }
 
-/*
- * Firebase
- */
 export interface FireGETIngreCounts {
   [IngredientType.Salad]: number;
   [IngredientType.Bacon]: number;

@@ -22,7 +22,7 @@ const SideDrawer: FC<SideDrawerProps> = (props) => {
 
   return (
     <>
-      <div className={sideDrawerClasses}>
+      <div className={sideDrawerClasses} onClick={props.onClosed}>
         <div className={classes.Logo}>
           <Logo />
         </div>

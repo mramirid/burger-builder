@@ -19,6 +19,7 @@ const store = configureStore({
       extraArgument: [reduxThunk],
     },
   }),
+  devTools: process.env.NODE_ENV === "development",
 });
 
 export * from "./types";

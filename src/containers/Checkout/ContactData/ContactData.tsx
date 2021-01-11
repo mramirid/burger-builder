@@ -30,6 +30,7 @@ const MySwal = withReactContent(Swal);
 const ContactData: FC = () => {
   const history = useHistory();
   const dispatch = useDispatch<AppDispatch>();
+  const auth = useSelector((state: RootState) => state.auth);
   const burger = useSelector((state: RootState) => state.burger);
 
   const [isLoading, setLoading] = useState(false);
@@ -167,6 +168,7 @@ const ContactData: FC = () => {
         ingredientCounts: burger.ingredientCounts!,
         totalPrice: burger.totalPrice,
         contact: submittedContact,
+        userId: auth.userId!,
       };
 
       setLoading(true);
@@ -182,6 +184,7 @@ const ContactData: FC = () => {
         });
     },
     [
+      auth.userId,
       burger.ingredientCounts,
       burger.totalPrice,
       dispatch,

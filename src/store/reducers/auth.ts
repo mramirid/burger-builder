@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { AppThunkAPIConfig } from "../types";
+import { AppThunk, AppThunkAPIConfig } from "../types";
 import { fireAuthAxios } from "../../axios/firebase";
 import {
   InputAuthPayload,
@@ -43,18 +43,11 @@ export const signUp = createAsyncThunk<
       });
     }
 
-    const tokenExpirationDuration = +response.data.expiresIn * 1000;
-    const tokenExpirationDate = new Date().getTime() + tokenExpirationDuration;
-
-    authLocalStorage.saveUserAuth({
-      userId: response.data.localId,
-      token: response.data.idToken,
-      tokenExpirationDate: tokenExpirationDate,
-    });
-
-    const authTimerId = window.setTimeout(
-      () => thunkAPI.dispatch(authSlice.actions.logout()),
-      tokenExpirationDuration
+    const authTimerId = authLocalStorage.setAuthPersistence(
+      response.data,
+      () => {
+        thunkAPI.dispatch(authSlice.actions.logout());
+      }
     );
 
     return {
@@ -99,19 +92,11 @@ export const signIn = createAsyncThunk<
       });
     }
 
-    // const tokenExpirationDuration = 5000; --> for testing auto logout
-    const tokenExpirationDuration = +response.data.expiresIn * 1000;
-    const tokenExpirationDate = new Date().getTime() + tokenExpirationDuration;
-
-    authLocalStorage.saveUserAuth({
-      userId: response.data.localId,
-      token: response.data.idToken,
-      tokenExpirationDate: tokenExpirationDate,
-    });
-
-    const authTimerId = window.setTimeout(
-      () => thunkAPI.dispatch(authSlice.actions.logout()),
-      tokenExpirationDuration
+    const authTimerId = authLocalStorage.setAuthPersistence(
+      response.data,
+      () => {
+        thunkAPI.dispatch(authSlice.actions.logout());
+      }
     );
 
     return {
@@ -140,6 +125,32 @@ export const signIn = createAsyncThunk<
     });
   }
 });
+
+export const tryAutoSignIn = (): AppThunk => (thunkDispatch) => {
+  const userAuthData = authLocalStorage.getUserAuth();
+  if (
+    userAuthData.token &&
+    userAuthData.userId &&
+    userAuthData.tokenExpirationDate
+  ) {
+    const tokenExpirationDate =
+      userAuthData.tokenExpirationDate - new Date().getTime();
+
+    if (tokenExpirationDate > 0) {
+      const authTimerId = window.setTimeout(() => {
+        thunkDispatch(logout());
+      }, tokenExpirationDate);
+
+      thunkDispatch(
+        setUserAuth({
+          userId: userAuthData.userId,
+          token: userAuthData.token,
+          authTimerId,
+        })
+      );
+    }
+  }
+};
 
 const authSlice = createSlice({
   name: "auth",

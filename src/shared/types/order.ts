@@ -5,6 +5,7 @@ export interface FirePOSTOrder {
   ingredientCounts: IngredientCounts;
   totalPrice: number;
   contact: FirePOSTContact;
+  userId: string;
 }
 
 export interface FireGETOrders {

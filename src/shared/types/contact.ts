@@ -30,7 +30,3 @@ export interface FirePOSTContact {
   [InputContactFields.ZipCode]: string;
   [InputContactFields.DeliveryMethod]: string;
 }
-
-export interface Contact extends FirePOSTContact {
-  id: string;
-}

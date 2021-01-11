@@ -8,9 +8,8 @@ import Layout from "./hoc/Layout/Layout";
 import Checkout from "./containers/Checkout/Checkout";
 import Orders from "./containers/Orders/Orders";
 import Auth from "./containers/Auth/Auth";
-import { getUserAuth } from "./shared/helpers/auth-local-storage";
-import { logout, setUserAuth } from "./store/reducers/auth";
 import Logout from "./containers/Auth/Logout/Logout";
+import { tryAutoSignIn } from "./store/reducers/auth";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,52 +17,19 @@ function App() {
   const auth = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    // Try auto login
-    const userAuthData = getUserAuth();
-    if (
-      userAuthData.token &&
-      userAuthData.userId &&
-      userAuthData.tokenExpirationDate
-    ) {
-      const tokenExpirationDate =
-        userAuthData.tokenExpirationDate - new Date().getTime();
-
-      if (tokenExpirationDate > 0) {
-        const authTimerId = window.setTimeout(() => {
-          dispatch(logout());
-        }, tokenExpirationDate);
-        dispatch(
-          setUserAuth({
-            userId: userAuthData.userId,
-            token: userAuthData.token,
-            authTimerId,
-          })
-        );
-      }
-    }
+    dispatch(tryAutoSignIn());
   }, [dispatch]);
 
   return (
     <Layout>
       <Route path="/" exact component={BurgerBuilder} />
-      <Route
-        path="/checkout"
-        render={() => {
-          return burger.ingredientCounts && auth.token ? (
-            <Checkout />
-          ) : (
-            <Redirect to="/" />
-          );
-        }}
-      />
-      <Route
-        path="/orders"
-        render={() => {
-          return auth.token ? <Orders /> : <Redirect to="/" />;
-        }}
-      />
+      {burger.ingredientCounts && auth.token && (
+        <Route path="/checkout" component={Checkout} />
+      )}
+      {auth.token && <Route path="/orders" component={Orders} />}
       <Route path="/auth" component={Auth} />
       <Route path="/logout" component={Logout} />
+      <Redirect to="/" />
     </Layout>
   );
 }

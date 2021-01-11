@@ -14,8 +14,8 @@ const MySwal = withReactContent(Swal);
 
 const Orders: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-
   const ordersReducer = useSelector((state: RootState) => state.orders);
+
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {

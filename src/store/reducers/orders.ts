@@ -50,8 +50,9 @@ export const fetchOrders = createAsyncThunk<IOrder[], void, AppThunkAPIConfig>(
   "orders/fetchOrders",
   async (_, thunkAPI) => {
     try {
+      const userAuth = thunkAPI.getState().auth;
       const response = await fireDBAxios.get<FireGETOrders>(
-        `/orders.json?auth=${thunkAPI.getState().auth.token}`
+        `/orders.json?auth=${userAuth.token}&orderBy="userId"&equalTo="${userAuth.userId}"`
       );
       if (response.status >= 400) {
         return thunkAPI.rejectWithValue({
@@ -83,6 +84,11 @@ const ordersSlice = createSlice({
     setDidPurchase(state, action: PayloadAction<boolean>) {
       state.didPurchase = action.payload;
     },
+    clearOrders(state) {
+      state.orders = [];
+      state.isFetchError = false;
+      state.didPurchase = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -110,6 +116,6 @@ const ordersSlice = createSlice({
   },
 });
 
-export const { setDidPurchase } = ordersSlice.actions;
+export const { setDidPurchase, clearOrders } = ordersSlice.actions;
 
 export default ordersSlice.reducer;

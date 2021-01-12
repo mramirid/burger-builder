@@ -1,5 +1,5 @@
-import { AxiosInstance } from "axios";
 import { Component, ComponentType } from "react";
+import { AxiosInstance } from "axios";
 
 import Modal from "../../components/UI/Modal/Modal";
 
@@ -11,11 +11,11 @@ interface StateType {
   };
 }
 
-function withErrorModal<T>(
-  WrappedComponent: ComponentType<T>,
+function withErrorModal<P extends string | number | object>(
+  WrappedComponent: ComponentType<P>,
   axios: AxiosInstance
 ) {
-  return class WithErrorModal extends Component<T, StateType> {
+  return class ComponentWithErrorModal extends Component<P, StateType> {
     state: StateType = {
       error: null,
       interceptorsIDs: {

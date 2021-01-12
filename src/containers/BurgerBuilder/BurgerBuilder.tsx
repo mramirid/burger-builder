@@ -15,7 +15,6 @@ import { RootState, AppDispatch } from "../../store";
 import {
   addIngredient,
   clearBurgerBuilder,
-  fetchIngredientCounts,
   removeIngredient,
 } from "../../store/reducers/burger";
 import { setDidPurchase } from "../../store/reducers/orders";
@@ -33,9 +32,6 @@ const BurgerBuilder: FC = () => {
   const [isPurchasing, setIsPurchasing] = useState(false);
 
   useEffect(() => {
-    if (!burger.ingredientCounts) {
-      dispatch(fetchIngredientCounts());
-    }
     if (orders.didPurchase) {
       dispatch(clearBurgerBuilder());
       dispatch(setDidPurchase(false));

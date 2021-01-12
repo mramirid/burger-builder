@@ -3,7 +3,7 @@ import { FC } from "react";
 import classes from "./NavigationItems.module.css";
 import NavigationItem from "./NavigationItem/NavigationItem";
 
-interface NavigationItemsProps {
+export interface NavigationItemsProps {
   isAuthenticated: boolean;
 }
 

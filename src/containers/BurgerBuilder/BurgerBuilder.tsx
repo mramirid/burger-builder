@@ -22,7 +22,7 @@ import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 
 const MySwal = withReactContent(Swal);
 
-const BurgerBuilder: FC = () => {
+export const BurgerBuilder: FC = () => {
   const history = useHistory();
   const dispatch = useDispatch<AppDispatch>();
   const burger = useSelector((state: RootState) => state.burger);
@@ -83,6 +83,7 @@ const BurgerBuilder: FC = () => {
       />
     );
   }
+
   return (
     <>
       {burgerBuilder || <Spinner />}

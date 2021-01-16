@@ -1,6 +1,11 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 
-import { AppThunk, AppThunkAPIConfig } from "../types";
+import { AppThunk, AppThunkAPIConfig, RootState } from "../types";
 import { fireAuthAxios } from "../../axios/firebase";
 import {
   InputAuthPayload,
@@ -8,15 +13,15 @@ import {
   FireSigninResBody,
   FireSignupResBody,
 } from "../../shared/types/auth";
-import * as authLocalStorage from "../../shared/helpers/auth-local-storage";
+import authLocalStorage from "../../shared/helpers/auth-local-storage";
 
-interface AuthState {
+export interface AuthState {
   userId: string | null;
   token: string | null;
   authTimerId: number;
 }
 
-const initialState: AuthState = {
+export const initialState: AuthState = {
   userId: null,
   token: null,
   authTimerId: -1,
@@ -85,6 +90,7 @@ export const signIn = createAsyncThunk<
         returnSecureToken: true,
       } as FireInputAuthReqBody
     );
+
     if (response.status >= 400) {
       return thunkAPI.rejectWithValue({
         statusCode: response.status,
@@ -183,6 +189,14 @@ const authSlice = createSlice({
       });
   },
 });
+
+export const selectToken = (state: RootState) => state.auth.token;
+export const selectUserId = (state: RootState) => state.auth.userId;
+export const selectAuthTimerId = (state: RootState) => state.auth.authTimerId;
+export const selectIsAuth = createSelector(
+  [selectToken, selectUserId],
+  (token, userId) => !!token && !!userId
+);
 
 export const { setUserAuth, logout } = authSlice.actions;
 

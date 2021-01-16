@@ -1,6 +1,5 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -11,23 +10,25 @@ import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import { RootState, AppDispatch } from "../../store";
+import { useAppSelector, useAppDispatch } from "../../store";
+import { selectToken } from "../../store/reducers/auth";
 import {
   addIngredient,
   clearBurgerBuilder,
   removeIngredient,
+  selectBurger,
 } from "../../store/reducers/burger";
-import { setDidPurchase } from "../../store/reducers/orders";
+import { selectOrders, setDidPurchase } from "../../store/reducers/orders";
 import withErrorModal from "../../hoc/withErrorModal/withErrorModal";
 
 const MySwal = withReactContent(Swal);
 
 export const BurgerBuilder: FC = () => {
   const history = useHistory();
-  const dispatch = useDispatch<AppDispatch>();
-  const burger = useSelector((state: RootState) => state.burger);
-  const orders = useSelector((state: RootState) => state.orders);
-  const auth = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const burger = useAppSelector(selectBurger);
+  const orders = useAppSelector(selectOrders);
+  const token = useAppSelector(selectToken);
 
   const [isPurchasing, setIsPurchasing] = useState(false);
 
@@ -62,7 +63,7 @@ export const BurgerBuilder: FC = () => {
         <BuildControls
           ingredientCounts={burger.ingredientCounts}
           totalPrice={burger.totalPrice}
-          isAuthenticated={!!auth.token}
+          isAuthenticated={!!token}
           purchasable={determinePurchasable()}
           addIngredient={(type) => dispatch(addIngredient(type))}
           removeIngredient={(type) => dispatch(removeIngredient(type))}

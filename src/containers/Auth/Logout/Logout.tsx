@@ -1,13 +1,12 @@
 import { FC, useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 
-import { AppDispatch } from "../../../store";
+import { useAppDispatch } from "../../../store";
 import { logout } from "../../../store/reducers/auth";
 import { clearOrders } from "../../../store/reducers/orders";
 
 const Logout: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(clearOrders());

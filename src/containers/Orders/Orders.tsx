@@ -1,20 +1,19 @@
 import { FC, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { unwrapResult } from "@reduxjs/toolkit";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 import Order from "../../components/Order/Order";
-import { AppDispatch, RootState } from "../../store";
-import { fetchOrders } from "../../store/reducers/orders";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { fetchOrders, selectOrders } from "../../store/reducers/orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { HttpError } from "../../shared/types/errors";
 
 const MySwal = withReactContent(Swal);
 
 const Orders: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const ordersReducer = useSelector((state: RootState) => state.orders);
+  const dispatch = useAppDispatch();
+  const ordersReducer = useAppSelector(selectOrders);
 
   const [isLoading, setIsLoading] = useState(false);
 

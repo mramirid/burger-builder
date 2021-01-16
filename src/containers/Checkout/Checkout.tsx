@@ -1,15 +1,15 @@
 import { FC, useCallback } from "react";
 import { Route, useHistory, useRouteMatch } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
 import ContactData from "./ContactData/ContactData";
-import { RootState } from "../../store";
+import { selectBurger } from "../../store/reducers/burger";
+import { useAppSelector } from "../../store";
 
 const Checkout: FC = () => {
   const history = useHistory();
   const routeMatch = useRouteMatch();
-  const burger = useSelector((state: RootState) => state.burger);
+  const burger = useAppSelector(selectBurger);
 
   const continueCheckout = useCallback(() => {
     history.replace("/checkout/contact-data");

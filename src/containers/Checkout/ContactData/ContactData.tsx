@@ -1,6 +1,5 @@
 import { FC, useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import produce from "immer";
 import Swal from "sweetalert2";
@@ -10,7 +9,7 @@ import classes from "./ContactData.module.css";
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
-import { AppDispatch, RootState } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { FirePOSTOrder } from "../../../shared/types/order";
 import { validate } from "../../../shared/helpers/validation";
 import {
@@ -23,15 +22,17 @@ import {
   FormSubmitHandler,
 } from "../../../shared/types/event-handlers";
 import { postOrder, setDidPurchase } from "../../../store/reducers/orders";
+import { selectBurger } from "../../../store/reducers/burger";
 import { HttpError } from "../../../shared/types/errors";
+import { selectUserId } from "../../../store/reducers/auth";
 
 const MySwal = withReactContent(Swal);
 
 const ContactData: FC = () => {
   const history = useHistory();
-  const dispatch = useDispatch<AppDispatch>();
-  const auth = useSelector((state: RootState) => state.auth);
-  const burger = useSelector((state: RootState) => state.burger);
+  const dispatch = useAppDispatch();
+  const userId = useAppSelector(selectUserId);
+  const burger = useAppSelector(selectBurger);
 
   const [isLoading, setLoading] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);
@@ -168,7 +169,7 @@ const ContactData: FC = () => {
         ingredientCounts: burger.ingredientCounts!,
         totalPrice: burger.totalPrice,
         contact: submittedContact,
-        userId: auth.userId!,
+        userId: userId!,
       };
 
       setLoading(true);
@@ -184,7 +185,7 @@ const ContactData: FC = () => {
         });
     },
     [
-      auth.userId,
+      userId,
       burger.ingredientCounts,
       burger.totalPrice,
       dispatch,

@@ -4,15 +4,15 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { fireDBAxios } from "../../axios/firebase";
 import { FirePOSTResBody } from "../../shared/types/firebase";
 import { IOrder, FirePOSTOrder, FireGETOrders } from "../../shared/types/order";
-import { AppThunkAPIConfig } from "../types";
+import { AppThunkAPIConfig, RootState } from "../types";
 
-interface OrdersState {
+export interface OrdersState {
   orders: IOrder[];
   isFetchError: boolean;
   didPurchase: boolean;
 }
 
-const initialState: OrdersState = {
+export const initialState: OrdersState = {
   orders: [],
   isFetchError: false,
   didPurchase: false,
@@ -115,6 +115,8 @@ const ordersSlice = createSlice({
       });
   },
 });
+
+export const selectOrders = (state: RootState) => state.orders;
 
 export const { setDidPurchase, clearOrders } = ordersSlice.actions;
 

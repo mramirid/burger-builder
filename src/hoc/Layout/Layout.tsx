@@ -1,13 +1,13 @@
 import { FC, useCallback, useState } from "react";
-import { useSelector } from "react-redux";
 
 import classes from "./Layout.module.css";
 import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
 import SideDrawer from "../../components/Navigation/SideDrawer/SideDrawer";
-import { RootState } from "../../store";
+import { useAppSelector } from "../../store";
+import { selectIsAuth } from "../../store/reducers/auth";
 
 const Layout: FC = (props) => {
-  const auth = useSelector((state: RootState) => state.auth);
+  const isAuthenticated = useAppSelector(selectIsAuth);
   const [isSideDrawerDisplayed, setIsSideDrawerDisplayed] = useState(false);
 
   const closeSideDrawer = useCallback(() => {
@@ -21,11 +21,11 @@ const Layout: FC = (props) => {
   return (
     <>
       <Toolbar
-        isAuthenticated={!!auth.token}
+        isAuthenticated={isAuthenticated}
         onDrawerToggleClicked={toggleSideDrawer}
       />
       <SideDrawer
-        isAuthenticated={!!auth.token}
+        isAuthenticated={isAuthenticated}
         isOpen={isSideDrawerDisplayed}
         onClosed={closeSideDrawer}
       />

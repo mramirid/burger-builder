@@ -9,7 +9,7 @@ configure({
 });
 
 jest.mock("react-redux", () => ({
-  useDispatch: () => {},
+  useDispatch: jest.fn(),
   useSelector: () => ({ ingredientCounts: {} }),
 }));
 

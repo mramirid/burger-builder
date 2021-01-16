@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { fireDBAxios } from "../../axios/firebase";
-import { AppThunkAPIConfig } from "../types";
+import { AppThunkAPIConfig, RootState } from "../types";
 import { INGREDIENT_PRICES } from "../../shared/constants/burger";
 import {
   IngredientCounts,
@@ -10,13 +10,13 @@ import {
   FireGETIngreCounts,
 } from "../../shared/types/burger";
 
-interface BurgerState {
+export interface BurgerState {
   ingredientCounts: IngredientCounts | null;
   totalPrice: number;
   isFetchError: boolean;
 }
 
-const initialState: BurgerState = {
+export const initialState: BurgerState = {
   ingredientCounts: null,
   totalPrice: 0,
   isFetchError: false,
@@ -93,6 +93,8 @@ const burgerSlice = createSlice({
       });
   },
 });
+
+export const selectBurger = (state: RootState) => state.burger;
 
 export const {
   addIngredient,

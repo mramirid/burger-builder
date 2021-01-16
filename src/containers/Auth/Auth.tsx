@@ -16,15 +16,14 @@ import {
 } from "../../shared/types/event-handlers";
 import { validate } from "../../shared/helpers/validation";
 import { signIn, signUp } from "../../store/reducers/auth";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
+import { useAppDispatch } from "../../store";
 import { HttpError } from "../../shared/types/errors";
 
 const MySwal = withReactContent(Swal);
 
 const Auth: FC = () => {
   const history = useHistory();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const [isLoading, setLoading] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);

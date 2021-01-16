@@ -6,7 +6,7 @@ interface UserAuth {
   tokenExpirationDate: number | null;
 }
 
-export function saveUserAuth(userAuthData: UserAuth) {
+function saveUserAuth(userAuthData: UserAuth) {
   if (
     userAuthData.userId &&
     userAuthData.token &&
@@ -21,7 +21,7 @@ export function saveUserAuth(userAuthData: UserAuth) {
   }
 }
 
-export function getUserAuth(): UserAuth {
+function getUserAuth(): UserAuth {
   return {
     userId: localStorage.getItem("userId"),
     token: localStorage.getItem("token"),
@@ -29,13 +29,13 @@ export function getUserAuth(): UserAuth {
   };
 }
 
-export function clearUserAuth() {
+function clearUserAuth() {
   localStorage.removeItem("userId");
   localStorage.removeItem("token");
   localStorage.removeItem("tokenExpirationDate");
 }
 
-export function setAuthPersistence(
+function setAuthPersistence(
   userAuthRes: FireAuthResBody,
   onLogout: () => void
 ): number {
@@ -52,3 +52,11 @@ export function setAuthPersistence(
   const authTimerId = window.setTimeout(onLogout, tokenExpirationDuration);
   return authTimerId;
 }
+
+const authLocalStorage = {
+  setAuthPersistence,
+  saveUserAuth,
+  getUserAuth,
+  clearUserAuth,
+};
+export default authLocalStorage;

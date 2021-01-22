@@ -22,3 +22,8 @@ export interface FireGETIngreCounts {
   [IngredientType.Cheese]: number;
   [IngredientType.Meat]: number;
 }
+
+export interface InitIngreCountsPayload {
+  loadedIngreCounts: IngredientCounts;
+  totalPrice: number;
+}

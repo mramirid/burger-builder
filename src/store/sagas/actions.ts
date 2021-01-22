@@ -10,3 +10,7 @@ export const setAutoLogout = createAction(
   "authSaga/setAutoLogout",
   withPayloadType<number>()
 );
+
+export const fetchIngredientCounts = createAction(
+  "authSaga/fetchIngredientCounts"
+);

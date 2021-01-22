@@ -1,8 +1,14 @@
 import { all, takeEvery, takeLatest } from "redux-saga/effects";
 
-import { setAutoLogout, logout, tryAutoSignIn } from "./actions";
+import {
+  setAutoLogout,
+  logout,
+  tryAutoSignIn,
+  fetchIngredientCounts,
+} from "./actions";
 import { onLogout, onAuthenticated, onAutoSignIn, onAutoLogout } from "./auth";
 import { signIn, signUp } from "../thunks/auth";
+import { onInitIngredientCounts } from "./burger";
 
 export function* watchAuth() {
   yield takeLatest(
@@ -14,6 +20,10 @@ export function* watchAuth() {
   yield takeEvery(logout, onLogout);
 }
 
+export function* watchBurger() {
+  yield takeEvery(fetchIngredientCounts, onInitIngredientCounts);
+}
+
 export default function* rootSaga() {
-  yield all([watchAuth()]);
+  yield all([watchAuth(), watchBurger()]);
 }

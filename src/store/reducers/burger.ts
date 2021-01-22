@@ -2,8 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
 import { INGREDIENT_PRICES } from "../../shared/constants/burger";
-import { IngredientCounts, IngredientType } from "../../shared/types/burger";
-import { fetchIngredientCounts } from "../thunks/burger";
+import {
+  IngredientCounts,
+  IngredientType,
+  InitIngreCountsPayload,
+} from "../../shared/types/burger";
 
 export interface BurgerState {
   ingredientCounts: IngredientCounts | null;
@@ -21,6 +24,14 @@ const burgerSlice = createSlice({
   name: "burger",
   initialState,
   reducers: {
+    initIngredientCounts(state, action: PayloadAction<InitIngreCountsPayload>) {
+      state.ingredientCounts = action.payload.loadedIngreCounts;
+      state.totalPrice = action.payload.totalPrice;
+      state.isFetchError = false;
+    },
+    setInitError(state) {
+      state.isFetchError = true;
+    },
     addIngredient(state, action: PayloadAction<IngredientType>) {
       if (state.ingredientCounts) {
         state.ingredientCounts[action.payload]++;
@@ -48,35 +59,13 @@ const burgerSlice = createSlice({
       }
     },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchIngredientCounts.fulfilled, (state, action) => {
-        const loadedIngreCounts = {
-          breadTop: 1,
-          ...action.payload,
-          breadBottom: 1,
-        };
-
-        const totalPrice = Object.keys(loadedIngreCounts)
-          .map((key) => {
-            const type = key as IngredientType;
-            return INGREDIENT_PRICES[type] * loadedIngreCounts[type];
-          })
-          .reduce((sum, curPrice) => sum + curPrice, 0);
-
-        state.ingredientCounts = loadedIngreCounts;
-        state.totalPrice = totalPrice;
-        state.isFetchError = false;
-      })
-      .addCase(fetchIngredientCounts.rejected, (state) => {
-        state.isFetchError = true;
-      });
-  },
 });
 
 export const selectBurger = (state: RootState) => state.burger;
 
 export const {
+  initIngredientCounts,
+  setInitError,
   addIngredient,
   removeIngredient,
   clearBurgerBuilder,

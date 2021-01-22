@@ -1,26 +1,18 @@
-import { combineReducers } from "redux";
-import reduxThunk from "redux-thunk";
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import createSagaMiddleware from "redux-saga";
 
-import burgerReducer from "./reducers/burger";
-import ordersReducer from "./reducers/orders";
-import authReducer from "./reducers/auth";
+import rootReducer from "./reducers/rootReducer";
+import rootSaga from "./sagas/rootSaga";
 
-const rootReducer = combineReducers({
-  burger: burgerReducer,
-  orders: ordersReducer,
-  auth: authReducer,
-});
+const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: getDefaultMiddleware({
-    thunk: {
-      extraArgument: [reduxThunk],
-    },
-  }),
+  middleware: getDefaultMiddleware().concat(sagaMiddleware),
   devTools: process.env.NODE_ENV === "development",
 });
+
+sagaMiddleware.run(rootSaga);
 
 export * from "./types";
 export default store;

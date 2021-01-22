@@ -1,5 +1,8 @@
 import { InputControl } from "./input";
 
+/*
+ * Authentication Forms
+ */
 enum InputAuthFields {
   Email = "email",
   Password = "password",
@@ -22,6 +25,9 @@ export interface FireInputAuthReqBody {
   returnSecureToken: boolean;
 }
 
+/*
+ * Firebase Auth REST API
+ */
 export interface FireAuthResBody {
   idToken: string;
   expiresIn: string;
@@ -40,4 +46,19 @@ export interface FireSignupResBody extends FireAuthResBody {
   email: string;
   refreshToken: string;
   kind: string;
+}
+
+/*
+ * Local Storage
+ */
+export interface StoreUserAuthPayload {
+  userId: string;
+  token: string;
+  tokenExpirationDate: number;
+}
+
+export interface SavedUserAuthPayload {
+  userId: string | null;
+  token: string | null;
+  tokenExpirationDate: number | null;
 }

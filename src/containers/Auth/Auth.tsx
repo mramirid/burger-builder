@@ -15,7 +15,7 @@ import {
   InputChangedEvent,
 } from "../../shared/types/event-handlers";
 import { validate } from "../../shared/helpers/validation";
-import { signIn, signUp } from "../../store/reducers/auth";
+import { signIn, signUp } from "../../store/thunks/auth";
 import { useAppDispatch } from "../../store";
 import { HttpError } from "../../shared/types/errors";
 

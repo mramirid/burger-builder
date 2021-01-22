@@ -1,12 +1,6 @@
-import { FireAuthResBody } from "../types/auth";
+import { SavedUserAuthPayload, StoreUserAuthPayload } from "../types/auth";
 
-interface UserAuth {
-  userId: string | null;
-  token: string | null;
-  tokenExpirationDate: number | null;
-}
-
-function saveUserAuth(userAuthData: UserAuth) {
+function saveUserAuth(userAuthData: StoreUserAuthPayload) {
   if (
     userAuthData.userId &&
     userAuthData.token &&
@@ -21,7 +15,7 @@ function saveUserAuth(userAuthData: UserAuth) {
   }
 }
 
-function getUserAuth(): UserAuth {
+function getUserAuth(): SavedUserAuthPayload {
   return {
     userId: localStorage.getItem("userId"),
     token: localStorage.getItem("token"),
@@ -35,28 +29,9 @@ function clearUserAuth() {
   localStorage.removeItem("tokenExpirationDate");
 }
 
-function setAuthPersistence(
-  userAuthRes: FireAuthResBody,
-  onLogout: () => void
-): number {
-  // const tokenExpirationDuration = 5000; --> for testing auto logout
-  const tokenExpirationDuration = +userAuthRes.expiresIn * 1000;
-  const tokenExpirationDate = new Date().getTime() + tokenExpirationDuration;
-
-  saveUserAuth({
-    userId: userAuthRes.localId,
-    token: userAuthRes.idToken,
-    tokenExpirationDate: tokenExpirationDate,
-  });
-
-  const authTimerId = window.setTimeout(onLogout, tokenExpirationDuration);
-  return authTimerId;
-}
-
-const authLocalStorage = {
-  setAuthPersistence,
+// eslint-disable-next-line import/no-anonymous-default-export
+export default {
   saveUserAuth,
   getUserAuth,
   clearUserAuth,
 };
-export default authLocalStorage;

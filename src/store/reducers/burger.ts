@@ -1,14 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { fireDBAxios } from "../../axios/firebase";
-import { AppThunkAPIConfig, RootState } from "../types";
+import { RootState } from "../types";
 import { INGREDIENT_PRICES } from "../../shared/constants/burger";
-import {
-  IngredientCounts,
-  IngredientType,
-  FireGETIngreCounts,
-} from "../../shared/types/burger";
+import { IngredientCounts, IngredientType } from "../../shared/types/burger";
+import { fetchIngredientCounts } from "../thunks/burger";
 
 export interface BurgerState {
   ingredientCounts: IngredientCounts | null;
@@ -21,21 +16,6 @@ export const initialState: BurgerState = {
   totalPrice: 0,
   isFetchError: false,
 };
-
-export const fetchIngredientCounts = createAsyncThunk<
-  FireGETIngreCounts,
-  void,
-  AppThunkAPIConfig
->("burger/fetchIngredientCounts", async (_, thunkAPI) => {
-  try {
-    const response = await fireDBAxios.get<FireGETIngreCounts>(
-      "/ingredients.json"
-    );
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
 
 const burgerSlice = createSlice({
   name: "burger",

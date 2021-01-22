@@ -5,7 +5,8 @@ import withReactContent from "sweetalert2-react-content";
 
 import Order from "../../components/Order/Order";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { fetchOrders, selectOrders } from "../../store/reducers/orders";
+import { fetchOrders } from "../../store/thunks/orders";
+import { selectOrders } from "../../store/reducers/orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import { HttpError } from "../../shared/types/errors";
 

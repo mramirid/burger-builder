@@ -2,8 +2,8 @@ import { FC, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
 import { useAppDispatch } from "../../../store";
-import { logout } from "../../../store/reducers/auth";
 import { clearOrders } from "../../../store/reducers/orders";
+import { logout } from "../../../store/sagas/actions";
 
 const Logout: FC = () => {
   const dispatch = useAppDispatch();

@@ -21,8 +21,9 @@ import {
   InputChangedEvent,
   FormSubmitHandler,
 } from "../../../shared/types/event-handlers";
-import { postOrder, setDidPurchase } from "../../../store/reducers/orders";
+import { setDidPurchase } from "../../../store/reducers/orders";
 import { selectBurger } from "../../../store/reducers/burger";
+import { postOrder } from "../../../store/thunks/orders";
 import { HttpError } from "../../../shared/types/errors";
 import { selectUserId } from "../../../store/reducers/auth";
 

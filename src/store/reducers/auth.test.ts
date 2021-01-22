@@ -1,4 +1,3 @@
-import reduxThunk from "redux-thunk";
 import { getDefaultMiddleware } from "@reduxjs/toolkit";
 import configureMockStore from "redux-mock-store";
 
@@ -20,11 +19,7 @@ import { AppDispatch, RootState } from "../types";
 import { HttpError } from "../../shared/types/errors";
 
 const mockStore = configureMockStore<RootState, AppDispatch>(
-  getDefaultMiddleware({
-    thunk: {
-      extraArgument: [reduxThunk],
-    },
-  })
+  getDefaultMiddleware()
 );
 
 describe("auth slice", () => {

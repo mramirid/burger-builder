@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { delay, put } from "redux-saga/effects";
+import { all, call, delay, put } from "redux-saga/effects";
 
 import authLocalStorage from "../../shared/helpers/auth-local-storage";
 import { FireAuthResBody } from "../../shared/types/auth";
@@ -9,19 +9,22 @@ import * as sagaActions from "./actions";
 export function* onAuthenticated(action: PayloadAction<FireAuthResBody>) {
   const tokenExpirationDuration = +action.payload.expiresIn * 1000;
   const tokenExpirationDate = new Date().getTime() + tokenExpirationDuration;
-
-  authLocalStorage.saveUserAuth({
-    token: action.payload.idToken,
-    userId: action.payload.localId,
-    tokenExpirationDate,
-  });
-  yield put(sagaActions.setAutoLogout(tokenExpirationDuration));
-  yield put(
-    authReducer.setUserAuth({
-      token: action.payload.idToken,
-      userId: action.payload.localId,
-    })
-  );
+  yield all([
+    call(() => {
+      authLocalStorage.saveUserAuth({
+        token: action.payload.idToken,
+        userId: action.payload.localId,
+        tokenExpirationDate,
+      });
+    }),
+    put(sagaActions.setAutoLogout(tokenExpirationDuration)),
+    put(
+      authReducer.setUserAuth({
+        token: action.payload.idToken,
+        userId: action.payload.localId,
+      })
+    ),
+  ]);
 }
 
 export function* onAutoSignIn() {
@@ -35,20 +38,24 @@ export function* onAutoSignIn() {
       userAuthData.tokenExpirationDate - new Date().getTime();
 
     if (tokenExpirationDuration > 0) {
-      yield put(sagaActions.setAutoLogout(tokenExpirationDuration));
-      yield put(
-        authReducer.setUserAuth({
-          token: userAuthData.token,
-          userId: userAuthData.userId,
-        })
-      );
+      yield all([
+        put(sagaActions.setAutoLogout(tokenExpirationDuration)),
+        put(
+          authReducer.setUserAuth({
+            token: userAuthData.token,
+            userId: userAuthData.userId,
+          })
+        ),
+      ]);
     }
   }
 }
 
 export function* onLogout() {
-  authLocalStorage.clearUserAuth();
-  yield put(authReducer.logout());
+  yield all([
+    call(() => authLocalStorage.clearUserAuth()),
+    put(authReducer.logout()),
+  ]);
 }
 
 export function* onAutoLogout(action: PayloadAction<number>) {

@@ -10,7 +10,7 @@ import { FC, Suspense } from "react";
  * @example
  * const SomeScreen = withSuspense(React.lazy(() => import("path/to/some/screen")));
  */
-export default function withSuspense<P extends object>(
+export default function withSuspense<P>(
   WrappedComponent: FC<P>,
   FallbackComponent: FC
 ) {

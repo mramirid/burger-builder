@@ -1,71 +1,46 @@
-import { Component, ComponentType } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { AxiosInstance } from "axios";
 
 import Modal from "../../components/UI/Modal/Modal";
 
-interface StateType {
-  error: Error | null;
-  interceptorsIDs: {
-    req: number | null;
-    res: number | null;
-  };
-}
+function withErrorModal<P>(WrappedComponent: FC<P>, axios: AxiosInstance) {
+  const ComponentWithSuspense: FC<P> = (props) => {
+    const [error, setError] = useState<Error | null>(null);
 
-function withErrorModal<P extends string | number | object>(
-  WrappedComponent: ComponentType<P>,
-  axios: AxiosInstance
-) {
-  return class ComponentWithErrorModal extends Component<P, StateType> {
-    state: StateType = {
-      error: null,
-      interceptorsIDs: {
-        req: null,
-        res: null,
+    const interceptorReqID = axios.interceptors.request.use(
+      (request) => {
+        setError(null);
+        return Promise.resolve(request);
       },
-    };
+      (err) => Promise.reject(err)
+    );
+    const interceptorResID = axios.interceptors.response.use(
+      (response) => Promise.resolve(response),
+      (err) => {
+        setError(err);
+        return Promise.reject(err);
+      }
+    );
 
-    componentDidMount() {
-      const interceptorReqID = axios.interceptors.request.use(
-        (request) => {
-          this.setState({ error: null });
-          return request;
-        },
-        (error) => error
-      );
-      const interceptorResID = axios.interceptors.response.use(
-        (response) => response,
-        (error) => {
-          this.setState({ error });
-          return error;
-        }
-      );
-      this.setState({
-        interceptorsIDs: {
-          req: interceptorReqID,
-          res: interceptorResID,
-        },
-      });
-    }
+    useEffect(() => {
+      return () => {
+        axios.interceptors.request.eject(interceptorReqID);
+        axios.interceptors.response.eject(interceptorResID);
+      };
+    }, [interceptorReqID, interceptorResID]);
 
-    componentWillUnmount() {
-      axios.interceptors.request.eject(this.state.interceptorsIDs.req!);
-      axios.interceptors.response.eject(this.state.interceptorsIDs.res!);
-    }
+    const confirmError = useCallback(() => setError(null), []);
 
-    render() {
-      return (
-        <>
-          <Modal
-            isDisplayed={!!this.state.error}
-            onClosed={() => this.setState({ error: null })}
-          >
-            {this.state.error?.message}
-          </Modal>
-          <WrappedComponent {...this.props} />
-        </>
-      );
-    }
+    return (
+      <>
+        <Modal isDisplayed={!!error} onClosed={confirmError}>
+          {error?.message}
+        </Modal>
+        <WrappedComponent {...props} />
+      </>
+    );
   };
+  return ComponentWithSuspense;
 }
 
 export default withErrorModal;

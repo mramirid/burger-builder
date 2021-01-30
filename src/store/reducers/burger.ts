@@ -20,7 +20,7 @@ export const initialState: BurgerState = {
   isFetchError: false,
 };
 
-const burgerSlice = createSlice({
+export const burgerSlice = createSlice({
   name: "burger",
   initialState,
   reducers: {

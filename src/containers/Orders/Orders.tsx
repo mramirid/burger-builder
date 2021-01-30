@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { fetchOrders } from "../../store/thunks/orders";
 import { selectOrders } from "../../store/reducers/orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import { HttpError } from "../../shared/types/errors";
+import { HttpError } from "../../types/errors";
 
 const MySwal = withReactContent(Swal);
 

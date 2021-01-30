@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { fireDBAxios } from "../../axios/firebase";
-import { FirePOSTResBody } from "../../shared/types/firebase";
-import { IOrder, FirePOSTOrder, FireGETOrders } from "../../shared/types/order";
+import { FirePOSTResBody } from "../../types/firebase";
+import { IOrder, FirePOSTOrder, FireGETOrders } from "../../types/order";
 import { AppThunkAPIConfig } from "../types";
 
 export const postOrder = createAsyncThunk<

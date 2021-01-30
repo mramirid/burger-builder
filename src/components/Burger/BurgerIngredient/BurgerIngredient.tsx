@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import classes from "./BurgerIngredient.module.css";
-import { IngredientType } from "../../../shared/types/burger";
+import { IngredientType } from "../../../types/burger";
 
 interface BurgerIngredientProps {
   type: IngredientType;

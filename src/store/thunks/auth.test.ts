@@ -7,8 +7,8 @@ import {
   FireInputAuthReqBody,
   FireSigninResBody,
   InputAuthPayload,
-} from "../../shared/types/auth";
-import { HttpError } from "../../shared/types/errors";
+} from "../../types/auth";
+import { HttpError } from "../../types/errors";
 import { initialState } from "../reducers/auth";
 import { AppDispatch, RootState } from "../types";
 import { signIn } from "./auth";

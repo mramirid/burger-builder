@@ -1,8 +1,8 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { all, call, delay, put } from "redux-saga/effects";
 
-import authLocalStorage from "../../shared/helpers/auth-local-storage";
-import { FireAuthResBody } from "../../shared/types/auth";
+import authLocalStorage from "../../utils/auth-local-storage";
+import { FireAuthResBody } from "../../types/auth";
 import * as authReducer from "../reducers/auth";
 import * as sagaActions from "./actions";
 

@@ -1,8 +1,8 @@
 import { FC } from "react";
 
 import Button from "../../UI/Button/Button";
-import { IngredientCounts, IngredientType } from "../../../shared/types/burger";
-import { BtnClickHandler } from "../../../shared/types/event-handlers";
+import { IngredientCounts, IngredientType } from "../../../types/burger";
+import { BtnClickHandler } from "../../../types/event-handlers";
 
 interface OrderSummaryProps {
   ingredientCounts: IngredientCounts;

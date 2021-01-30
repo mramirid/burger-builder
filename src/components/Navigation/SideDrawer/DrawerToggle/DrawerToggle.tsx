@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import classes from "./DrawerToggle.module.css";
-import { DivClickHandler } from "../../../../shared/types/event-handlers";
+import { DivClickHandler } from "../../../../types/event-handlers";
 
 interface DrawerToggleProps {
   onClicked: DivClickHandler;

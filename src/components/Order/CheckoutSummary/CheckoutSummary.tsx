@@ -3,8 +3,8 @@ import { FC } from "react";
 import classes from "./CheckoutSummary.module.css";
 import Burger from "../../Burger/Burger";
 import Button from "../../UI/Button/Button";
-import { IngredientCounts } from "../../../shared/types/burger";
-import { BtnClickHandler } from "../../../shared/types/event-handlers";
+import { IngredientCounts } from "../../../types/burger";
+import { BtnClickHandler } from "../../../types/event-handlers";
 
 interface CheckoutSummaryProps {
   ingredientCounts: IngredientCounts;

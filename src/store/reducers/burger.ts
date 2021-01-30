@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../types";
-import { INGREDIENT_PRICES } from "../../shared/constants/burger";
+import { INGREDIENT_PRICES } from "../../constants/burger";
 import {
   IngredientCounts,
   IngredientType,
   InitIngreCountsPayload,
-} from "../../shared/types/burger";
+} from "../../types/burger";
 
 export interface BurgerState {
   ingredientCounts: IngredientCounts | null;

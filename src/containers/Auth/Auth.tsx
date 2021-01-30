@@ -6,18 +6,18 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 import classes from "./Auth.module.css";
-import { InputAuthControls, InputAuthPayload } from "../../shared/types/auth";
+import { InputAuthControls, InputAuthPayload } from "../../types/auth";
 import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import {
   FormSubmitHandler,
   InputChangedEvent,
-} from "../../shared/types/event-handlers";
-import { validate } from "../../shared/helpers/validation";
+} from "../../types/event-handlers";
+import { validate } from "../../utils/validation";
 import { signIn, signUp } from "../../store/thunks/auth";
 import { useAppDispatch } from "../../store";
-import { HttpError } from "../../shared/types/errors";
+import { HttpError } from "../../types/errors";
 
 const MySwal = withReactContent(Swal);
 

@@ -6,9 +6,9 @@ import {
   FireGETIngreCounts,
   IngredientCounts,
   IngredientType,
-} from "../../shared/types/burger";
+} from "../../types/burger";
 import { initIngredientCounts, setInitError } from "../reducers/burger";
-import { INGREDIENT_PRICES } from "../../shared/constants/burger";
+import { INGREDIENT_PRICES } from "../../constants/burger";
 
 export function* onInitIngredientCounts() {
   try {

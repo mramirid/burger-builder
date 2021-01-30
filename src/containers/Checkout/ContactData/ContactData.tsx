@@ -10,21 +10,21 @@ import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { FirePOSTOrder } from "../../../shared/types/order";
-import { validate } from "../../../shared/helpers/validation";
+import { FirePOSTOrder } from "../../../types/order";
+import { validate } from "../../../utils/validation";
 import {
   InputContactFields,
   FirePOSTContact,
   InputContactControls,
-} from "../../../shared/types/contact";
+} from "../../../types/contact";
 import {
   InputChangedEvent,
   FormSubmitHandler,
-} from "../../../shared/types/event-handlers";
+} from "../../../types/event-handlers";
 import { setDidPurchase } from "../../../store/reducers/orders";
 import { selectBurger } from "../../../store/reducers/burger";
 import { postOrder } from "../../../store/thunks/orders";
-import { HttpError } from "../../../shared/types/errors";
+import { HttpError } from "../../../types/errors";
 import { selectUserId } from "../../../store/reducers/auth";
 
 const MySwal = withReactContent(Swal);

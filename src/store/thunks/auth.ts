@@ -8,7 +8,7 @@ import {
   FireSigninResBody,
   FireSignupResBody,
   FireAuthResBody,
-} from "../../shared/types/auth";
+} from "../../types/auth";
 
 export const signUp = createAsyncThunk<
   FireAuthResBody,

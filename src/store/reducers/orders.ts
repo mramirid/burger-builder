@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { IOrder } from "../../shared/types/order";
+import { IOrder } from "../../types/order";
 import { fetchOrders, postOrder } from "../thunks/orders";
 import { RootState } from "../types";
 

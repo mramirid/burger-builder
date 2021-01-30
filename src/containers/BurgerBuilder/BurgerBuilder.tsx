@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-import { IngredientType } from "../../shared/types/burger";
+import { IngredientType } from "../../types/burger";
 import { fireDBAxios } from "../../axios/firebase";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";

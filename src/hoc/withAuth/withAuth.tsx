@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Redirect } from "react-router-dom";
 
-import authLocalStorage from "../../shared/helpers/auth-local-storage";
+import authLocalStorage from "../../utils/auth-local-storage";
 
 export default function withAuth<P>(WrappedComponent: FC<P>) {
   const ComponentWithAuth: FC<P> = (props) => {

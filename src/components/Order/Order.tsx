@@ -1,8 +1,8 @@
 import { CSSProperties, FC } from "react";
 
 import classes from "./Order.module.css";
-import { IOrder } from "./../../shared/types/order";
-import { IngredientType } from "../../shared/types/burger";
+import { IOrder } from "../../types/order";
+import { IngredientType } from "../../types/burger";
 
 interface OrderProps {
   order: IOrder;

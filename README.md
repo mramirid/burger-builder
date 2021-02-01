@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Burger Builder App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Burger Builder App built with React, Redux Toolkit & Redux Saga
 
 ## Available Scripts
 
